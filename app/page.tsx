@@ -1,9 +1,11 @@
 'use client'
 
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 
 export default function Home() {
+  const [user, setUser] = useState({});
+
   useEffect(() => {
     const socket = io('http://localhost:3001');
 
@@ -14,6 +16,10 @@ export default function Home() {
 
     socket.on("user connected", user => {
       console.log(`User ${user.name} has connected.`)
+    })
+
+    socket.on('user data', userData => {
+      setUser(userData);
     })
 
     socket.on("user disconnected", user => {
