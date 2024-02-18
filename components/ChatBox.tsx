@@ -1,4 +1,8 @@
-export default function ChatBox({ messages }) {
+interface ChatBoxProps {
+  messages: string[]
+}
+
+export default function ChatBox({ messages }: ChatBoxProps) {
   return (
     <div>
       <h3>ChatBox</h3>

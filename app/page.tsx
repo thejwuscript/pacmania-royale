@@ -4,11 +4,13 @@ import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import ConnectedUsersList from '@/components/ConnectedUsersList';
 import ChatBox from '@/components/ChatBox';
+import { ConnectedUser } from '@/types/common';
+
 
 export default function Home() {
-  const [connectedUsers, setConnectedUsers] = useState([]);
-  const [myUser, setMyUser] = useState({});
-  const [chatMessages, setChatMessages] = useState([]);
+  const [connectedUsers, setConnectedUsers] = useState<ConnectedUser[]>([]);
+  const [myUser, setMyUser] = useState<ConnectedUser | null>(null);
+  const [chatMessages, setChatMessages] = useState<string[]>([]);
 
   useEffect(() => {
     const socket = io('http://localhost:3001');
@@ -47,7 +49,7 @@ export default function Home() {
   return (
     <div>
       <h1>Game Lobby</h1>
-      <ConnectedUsersList connectedUsers={connectedUsers} myUser={myUser} />
+      {myUser && <ConnectedUsersList connectedUsers={connectedUsers} myUser={myUser} />}
       <ChatBox messages={chatMessages} />
     </div>
   );

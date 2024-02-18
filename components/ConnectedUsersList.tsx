@@ -1,4 +1,11 @@
-export default function ConnectedUsersList({ connectedUsers, myUser }) {
+import { ConnectedUser } from "@/types/common"
+
+interface ConnectedUsersListProps {
+  connectedUsers: ConnectedUser[],
+  myUser: ConnectedUser,
+}
+
+export default function ConnectedUsersList({ connectedUsers, myUser }: ConnectedUsersListProps) {
   const otherUsers = connectedUsers.filter(user => user.name !== myUser.name)
 
   return (
