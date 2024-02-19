@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react';
-import { io } from 'socket.io-client';
+import { useState, useEffect, useRef } from 'react';
+import { socket } from './socket';
 import ConnectedUsersList from '@/components/ConnectedUsersList';
 import ChatBox from '@/components/ChatBox';
 import { ConnectedUser } from '@/types/common';
@@ -13,12 +13,7 @@ export default function Home() {
   const [chatMessages, setChatMessages] = useState<string[]>([]);
 
   useEffect(() => {
-    const socket = io(process.env.NEXT_PUBLIC_SOCKETIO_URL);
-
-    // socket.on('connect', () => {
-    //   const socketId = socket.id;
-    //   console.log("Socket ID:", socketId);
-    // });
+    socket.connect()
 
     socket.on("user connected", user => {
       setChatMessages(prev => [...prev, `User ${user.name} has connected.`])
