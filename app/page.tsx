@@ -13,7 +13,7 @@ export default function Home() {
   const [chatMessages, setChatMessages] = useState<string[]>([]);
 
   useEffect(() => {
-    const socket = io('http://localhost:3001');
+    const socket = io(process.env.NEXT_PUBLIC_SOCKETIO_URL);
 
     // socket.on('connect', () => {
     //   const socketId = socket.id;
