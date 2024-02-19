@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { socket } from '@/app/socket';
 
 export default function ChatMessageInput() {
   const [message, setMessage] = useState("")
@@ -9,6 +10,7 @@ export default function ChatMessageInput() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    socket.emit("new chat message", message)
   }
 
   return (

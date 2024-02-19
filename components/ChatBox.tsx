@@ -1,3 +1,5 @@
+import ChatMessageInput from "./ChatMessageInput"
+
 interface ChatBoxProps {
   messages: string[]
 }
@@ -11,6 +13,7 @@ export default function ChatBox({ messages }: ChatBoxProps) {
           <li key={index}>{message}</li>
         ))}
       </ul>
+      <ChatMessageInput />
     </div>
   )
 }
