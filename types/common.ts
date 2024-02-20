@@ -4,6 +4,6 @@ export type User = {
 }
 
 export type Message = {
-  sender: string,
+  sender?: string,
   content: string,
 }

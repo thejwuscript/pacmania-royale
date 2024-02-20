@@ -1,8 +1,8 @@
 import ChatMessageInput from "./ChatMessageInput"
-import type { User } from "@/types/common"
+import type { Message, User } from "@/types/common"
 
 interface ChatBoxProps {
-  messages: string[],
+  messages: Message[],
   currentUser: User,
 }
 
@@ -12,7 +12,9 @@ export default function ChatBox({ messages, currentUser }: ChatBoxProps) {
       <h3>ChatBox</h3>
       <ul>
         {messages.map((message, index) => (
-          <li key={index}>{message}</li>
+          <li key={index}>
+            {message.sender && "<" + message.sender + ">: "}{message.content}
+          </li>
         ))}
       </ul>
       <ChatMessageInput username={currentUser.name} />

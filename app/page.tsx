@@ -4,20 +4,20 @@ import { useState, useEffect } from 'react';
 import { socket } from './socket';
 import ConnectedUsersList from '@/components/ConnectedUsersList';
 import ChatBox from '@/components/ChatBox';
-import { User } from '@/types/common';
+import { Message, User } from '@/types/common';
 import Loader from '@/components/Loader';
 
 
 export default function Home() {
   const [connectedUsers, setConnectedUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [chatMessages, setChatMessages] = useState<string[]>([]);
+  const [chatMessages, setChatMessages] = useState<Message[]>([]);
 
   useEffect(() => {
     socket.connect()
 
     function onConnect(user: User) {
-      setChatMessages(prev => [...prev, `User ${user.name} has connected.`])
+      setChatMessages(prev => [...prev, { content: `User ${user.name} has connected.` }])
     }
 
     function onUpdateUserList(users: User[]) {
@@ -28,12 +28,12 @@ export default function Home() {
       setCurrentUser(data)
     }
 
-    function onChatMessage(message: string) {
-      setChatMessages(prev => [...prev, message])
+    function onChatMessage(message: string, username: string) {
+      setChatMessages(prev => [...prev, { sender: username, content: message }])
     }
 
     function onUserDisconnect(user: User) {
-      setChatMessages(prev => [...prev, `User ${user.name} has disconnected.`])
+      setChatMessages(prev => [...prev, { content: `User ${user.name} has disconnected.` }])
       setConnectedUsers(connectedUsers.filter(connectedUser => connectedUser.name !== user.name))
     }
 
