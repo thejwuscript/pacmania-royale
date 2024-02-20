@@ -5,6 +5,7 @@ import { socket } from './socket';
 import ConnectedUsersList from '@/components/ConnectedUsersList';
 import ChatBox from '@/components/ChatBox';
 import { User } from '@/types/common';
+import Loader from '@/components/Loader';
 
 
 export default function Home() {
@@ -52,11 +53,15 @@ export default function Home() {
     }
   }, [])
 
+  if (!currentUser) {
+    return <Loader />
+  }
+
   return (
     <div>
       <h1>Game Lobby</h1>
-      {currentUser && <ConnectedUsersList connectedUsers={connectedUsers} currentUser={currentUser} />}
-      <ChatBox messages={chatMessages} />
+      <ConnectedUsersList connectedUsers={connectedUsers} currentUser={currentUser} />
+      <ChatBox messages={chatMessages} currentUser={currentUser} />
     </div>
   );
 }
