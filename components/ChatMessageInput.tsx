@@ -11,6 +11,7 @@ export default function ChatMessageInput() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     socket.emit("new chat message", message)
+    setMessage("")
   }
 
   return (
