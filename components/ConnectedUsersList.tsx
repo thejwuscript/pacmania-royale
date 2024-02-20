@@ -1,18 +1,18 @@
-import { ConnectedUser } from "@/types/common"
+import { User } from "@/types/common"
 
 interface ConnectedUsersListProps {
-  connectedUsers: ConnectedUser[],
-  myUser: ConnectedUser,
+  connectedUsers: User[],
+  currentUser: User,
 }
 
-export default function ConnectedUsersList({ connectedUsers, myUser }: ConnectedUsersListProps) {
-  const otherUsers = connectedUsers.filter(user => user.name !== myUser.name)
+export default function ConnectedUsersList({ connectedUsers, currentUser }: ConnectedUsersListProps) {
+  const otherUsers = connectedUsers.filter(user => user.name !== currentUser.name)
 
   return (
     <div>
       <h3>List of Users</h3>
       <ul>
-        <li><b>{myUser.name}</b></li>
+        <li><b>{currentUser.name}</b></li>
         {otherUsers.map(user => (
           <li key={user.name}>
             {user.name}

@@ -1,42 +1,53 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { socket } from './socket';
 import ConnectedUsersList from '@/components/ConnectedUsersList';
 import ChatBox from '@/components/ChatBox';
-import { ConnectedUser } from '@/types/common';
+import { User } from '@/types/common';
 
 
 export default function Home() {
-  const [connectedUsers, setConnectedUsers] = useState<ConnectedUser[]>([]);
-  const [myUser, setMyUser] = useState<ConnectedUser | null>(null);
+  const [connectedUsers, setConnectedUsers] = useState<User[]>([]);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [chatMessages, setChatMessages] = useState<string[]>([]);
 
   useEffect(() => {
     socket.connect()
 
-    socket.on("user connected", user => {
+    function onConnect(user: User) {
       setChatMessages(prev => [...prev, `User ${user.name} has connected.`])
-    })
+    }
 
-    socket.on("connected users", users => {
+    function onUpdateUserList(users: User[]) {
       setConnectedUsers(users)
-    })
+    }
 
-    socket.on('my user data', myUserData => {
-      setMyUser(myUserData);
-    })
+    function setCurrentUserData(data: User) {
+      setCurrentUser(data)
+    }
 
-    socket.on("chat messages", message => {
+    function onChatMessage(message: string) {
       setChatMessages(prev => [...prev, message])
-    })
+    }
 
-    socket.on("user disconnected", user => {
+    function onUserDisconnect(user: User) {
       setChatMessages(prev => [...prev, `User ${user.name} has disconnected.`])
       setConnectedUsers(connectedUsers.filter(connectedUser => connectedUser.name !== user.name))
-    })
+    }
+
+    socket.on("connected", onConnect)
+    socket.on("update user list", onUpdateUserList)
+    socket.on('current user data', setCurrentUserData)
+    socket.on("chat messages", onChatMessage)
+    socket.on("disconnected", onUserDisconnect)
 
     return () => {
+      socket.off("connected", onConnect)
+      socket.off("update user list", onUpdateUserList)
+      socket.off('current user data', setCurrentUserData)
+      socket.off("chat messages", onChatMessage)
+      socket.off("disconnected", onUserDisconnect)
       socket.disconnect()
     }
   }, [])
@@ -44,7 +55,7 @@ export default function Home() {
   return (
     <div>
       <h1>Game Lobby</h1>
-      {myUser && <ConnectedUsersList connectedUsers={connectedUsers} myUser={myUser} />}
+      {currentUser && <ConnectedUsersList connectedUsers={connectedUsers} currentUser={currentUser} />}
       <ChatBox messages={chatMessages} />
     </div>
   );

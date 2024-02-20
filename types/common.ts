@@ -1,4 +1,4 @@
-export type ConnectedUser = {
+export type User = {
   id?: string,
   name: string,
 }
