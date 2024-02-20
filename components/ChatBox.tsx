@@ -8,7 +8,7 @@ interface ChatBoxProps {
 
 export default function ChatBox({ messages, currentUser }: ChatBoxProps) {
   return (
-    <div>
+    <div className="col-span-1 row-start-3 row-end-4">
       <h3>ChatBox</h3>
       <ul>
         {messages.map((message, index) => (

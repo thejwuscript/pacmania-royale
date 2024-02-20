@@ -58,8 +58,9 @@ export default function Home() {
   }
 
   return (
-    <div>
-      <h1>Game Lobby</h1>
+    <div className='w-full h-screen grid grid-cols-[3fr_1fr] gap-4 grid-rows-[80px_1fr_1fr]'>
+      <h1 className='col-span-2 row-span-1 font-retro'>Game Lobby</h1>
+      <p className='row-start-2 row-end-3 col-span-1'>Rooms placeholder here</p>
       <ConnectedUsersList connectedUsers={connectedUsers} currentUser={currentUser} />
       <ChatBox messages={chatMessages} currentUser={currentUser} />
     </div>
