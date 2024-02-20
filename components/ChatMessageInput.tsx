@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { socket } from '@/app/socket';
+import { InputWithButton } from './InputWithButton';
 
 interface ChatMessageInputProps {
   username: string
@@ -15,17 +16,12 @@ export default function ChatMessageInput({ username }: ChatMessageInputProps) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (message.trim() !== "") {
-      socket.emit("new chat message", message, username) // also need user's name here
+      socket.emit("new chat message", message, username)
       setMessage("")
     }
   }
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input type="text" value={message} onChange={handleChange} placeholder="Type a message..." />
-        <button type="submit">Send</button>
-      </form>
-    </div>
+    <InputWithButton onSubmit={handleSubmit} onChange={handleChange} message={message} />
   )
 }
