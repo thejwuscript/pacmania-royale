@@ -9,7 +9,7 @@ interface InputWithButtonProps {
 
 export function InputWithButton({ onSubmit, onChange, message }: InputWithButtonProps) {
   return (
-    <form className="flex w-full max-w-sm items-center space-x-2" onSubmit={onSubmit}>
+    <form className="flex w-full items-center space-x-2" onSubmit={onSubmit}>
       <Input type="text" placeholder="Type a message..." onChange={onChange} value={message} />
       <Button type="submit">Send</Button>
     </form>

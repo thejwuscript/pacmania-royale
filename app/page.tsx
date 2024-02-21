@@ -58,11 +58,19 @@ export default function Home() {
   }
 
   return (
-    <div className='w-full h-screen grid grid-cols-[3fr_1fr] gap-4 grid-rows-[80px_1fr_1fr]'>
-      <h1 className='col-span-2 row-span-1 font-retro'>Game Lobby</h1>
-      <p className='row-start-2 row-end-3 col-span-1'>Rooms placeholder here</p>
-      <ConnectedUsersList connectedUsers={connectedUsers} currentUser={currentUser} />
-      <ChatBox messages={chatMessages} currentUser={currentUser} />
+    <div className='w-full h-screen grid grid-cols-[3fr_1fr] gap-4 grid-rows-[80px_200px_200px]'>
+      <h1 className='col-span-2 row-span-1 font-retro flex justify-center items-center text-xl'>Game Lobby</h1>
+      <div className='row-start-2 row-end-3 col-span-1 p-4 border-2 border-white'>
+        <div>Game Room 1</div>
+        <div>Game Room 2</div>
+        <div>Game Room 3</div>
+      </div>
+      <div className="col-start-2 col-span-1 row-span-2 border-2 border-white p-2">
+        <ConnectedUsersList connectedUsers={connectedUsers} currentUser={currentUser} />
+      </div>
+      <div className="col-span-1 row-start-3 row-end-4">
+        <ChatBox messages={chatMessages} currentUser={currentUser} />
+      </div>
     </div>
   );
 }

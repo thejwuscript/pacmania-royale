@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Press_Start_2P } from "next/font/google";
 import "./globals.css";
+import ThemeProvider from "@/components/ThemeProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 const pressStart2P = Press_Start_2P({
@@ -21,7 +22,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={pressStart2P.variable}>
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

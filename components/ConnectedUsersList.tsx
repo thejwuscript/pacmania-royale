@@ -9,8 +9,8 @@ export default function ConnectedUsersList({ connectedUsers, currentUser }: Conn
   const otherUsers = connectedUsers.filter(user => user.name !== currentUser.name)
 
   return (
-    <div className="col-start-2 col-span-1 row-span-3">
-      <h3>List of Users</h3>
+    <div>
+      <h2 className="font-retro mb-2">Players</h2>
       <ul>
         <li><b>{currentUser.name}</b></li>
         {otherUsers.map(user => (
