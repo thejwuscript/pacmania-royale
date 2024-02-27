@@ -17,7 +17,7 @@ export default function Home() {
     socket.connect()
 
     function onConnect(user: User) {
-      setChatMessages(prev => [...prev, { content: `User ${user.name} has connected.` }])
+      setChatMessages(prev => [{ content: `User ${user.name} has connected.` }, ...prev])
     }
 
     function onUpdateUserList(users: User[]) {
@@ -29,11 +29,11 @@ export default function Home() {
     }
 
     function onChatMessage(message: string, username: string) {
-      setChatMessages(prev => [...prev, { sender: username, content: message }])
+      setChatMessages(prev => [{ sender: username, content: message }, ...prev])
     }
 
     function onUserDisconnect(user: User) {
-      setChatMessages(prev => [...prev, { content: `User ${user.name} has disconnected.` }])
+      setChatMessages(prev => [{ content: `User ${user.name} has disconnected.` }, ...prev])
       setConnectedUsers(connectedUsers.filter(connectedUser => connectedUser.name !== user.name))
     }
 

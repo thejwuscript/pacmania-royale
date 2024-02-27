@@ -10,7 +10,7 @@ export default function ChatBox({ messages, currentUser }: ChatBoxProps) {
   return (
     <div className="relative flex flex-col gap-2 p-2 border-2 border-black h-full">
       <ul className="flex flex-col-reverse h-full overflow-y-auto">
-        {messages.toReversed().map((message, index) => (
+        {messages.map((message, index) => (
           <li key={index} className="">
             {message.sender && "<" + message.sender + ">: "}{message.content}
           </li>
