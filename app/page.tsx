@@ -1,23 +1,22 @@
 'use client'
 
-import { useState, useEffect } from 'react';
-import { socket } from './socket';
+import { useState, useEffect, useContext } from 'react';
 import ConnectedUsersList from '@/components/ConnectedUsersList';
 import ChatBox from '@/components/ChatBox';
 import { Message, User } from '@/types/common';
 import Loader from '@/components/Loader';
 import { useRouter } from 'next/navigation';
+import { SocketContext } from '@/components/SocketProvider';
 
 
 export default function Home() {
+  const socket = useContext(SocketContext);
   const router = useRouter();
   const [connectedUsers, setConnectedUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
 
   useEffect(() => {
-    socket.connect()
-
     function onConnect(user: User) {
       setChatMessages(prev => [{ content: `User ${user.name} has connected.` }, ...prev])
     }
@@ -51,9 +50,12 @@ export default function Home() {
       socket.off('current user data', setCurrentUserData)
       socket.off("chat messages", onChatMessage)
       socket.off("disconnected", onUserDisconnect)
-      socket.disconnect()
     }
   }, [])
+
+  useEffect(() => {
+    socket.emit("join lobby")
+  },[])
 
   const handleCreateGameClick = async (e: React.MouseEvent) => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_SOCKETIO_URL}/gameroom`, {
