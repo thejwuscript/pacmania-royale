@@ -21,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={pressStart2P.variable}>
+    <html suppressHydrationWarning lang="en" className={pressStart2P.variable}>
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
