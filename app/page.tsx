@@ -6,9 +6,11 @@ import ConnectedUsersList from '@/components/ConnectedUsersList';
 import ChatBox from '@/components/ChatBox';
 import { Message, User } from '@/types/common';
 import Loader from '@/components/Loader';
+import { useRouter } from 'next/navigation';
 
 
 export default function Home() {
+  const router = useRouter();
   const [connectedUsers, setConnectedUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
@@ -53,6 +55,15 @@ export default function Home() {
     }
   }, [])
 
+  const handleCreateGameClick = async (e: React.MouseEvent) => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SOCKETIO_URL}/gameroom`, {
+      method: 'POST'
+    })
+    const data = await res.json();
+    console.log(data)
+    router.push(`/gameroom/${data.id}`)
+  }
+
   if (!currentUser) {
     return <Loader />
   }
@@ -61,6 +72,9 @@ export default function Home() {
     <div className='w-full h-screen grid grid-cols-[3fr_1fr] gap-4 grid-rows-[80px,1fr,minmax(30%,300px)] px-2 py-2'>
       <h1 className='col-span-2 row-span-1 font-retro flex justify-center items-center text-xl'>Game Lobby</h1>
       <div className='row-start-2 row-end-3 col-span-1 p-4'>
+        <button onClick={handleCreateGameClick}>
+          Create Game
+        </button>
         <div>Game Room 1</div>
         <div>Game Room 2</div>
         <div>Game Room 3</div>
