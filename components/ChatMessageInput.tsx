@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { socket } from '@/app/socket';
+import { useState, useContext } from 'react';
 import { InputWithButton } from './InputWithButton';
+import { SocketContext } from './SocketProvider';
 
 interface ChatMessageInputProps {
   username: string
@@ -8,6 +8,7 @@ interface ChatMessageInputProps {
 
 export default function ChatMessageInput({ username }: ChatMessageInputProps) {
   const [message, setMessage] = useState("")
+  const socket = useContext(SocketContext);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(e.target.value)
