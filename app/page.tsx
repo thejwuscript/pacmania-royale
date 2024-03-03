@@ -3,11 +3,12 @@
 import { useState, useEffect, useContext } from 'react';
 import ConnectedUsersList from '@/components/ConnectedUsersList';
 import ChatBox from '@/components/ChatBox';
-import { Message, User } from '@/types/common';
+import { Message, User, Gameroom } from '@/types/common';
 import Loader from '@/components/Loader';
 import { useRouter } from 'next/navigation';
 import { SocketContext } from '@/components/SocketProvider';
-
+import LobbyGameroomListLayout from '@/components/LobbyGameroomListLayout';
+import LobbyGameroomListItem from '@/components/LobbyGameroomListItem';
 
 export default function Home() {
   const socket = useContext(SocketContext);
@@ -15,6 +16,7 @@ export default function Home() {
   const [connectedUsers, setConnectedUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
+  const [gamerooms, setGamerooms] = useState<Gameroom[]>([]);
 
   useEffect(() => {
     function onConnect(user: User) {
@@ -81,9 +83,11 @@ export default function Home() {
         <button onClick={handleCreateGameClick}>
           Create Game
         </button>
-        <div>Game Room 1</div>
-        <div>Game Room 2</div>
-        <div>Game Room 3</div>
+        <LobbyGameroomListLayout>
+          {gamerooms.map(gameroom => (
+            <LobbyGameroomListItem {...gameroom} />
+          ))}
+        </LobbyGameroomListLayout>
       </div>
       <div className="col-span-1 row-start-3 row-end-4">
         <ChatBox messages={chatMessages} currentUser={currentUser} />
