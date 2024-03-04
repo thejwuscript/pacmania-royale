@@ -19,6 +19,7 @@ export default function Gameroom({ params }: { params: { id: string } }) {
     socket.on("players joined", onPlayersJoined)
 
     return () => {
+      socket.emit("leave gameroom", params.id)
       socket.off("players joined", onPlayersJoined)
     }
   }, [])
