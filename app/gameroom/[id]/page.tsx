@@ -29,7 +29,7 @@ export default function Gameroom({ params }: { params: { id: string } }) {
       <h2>Players in this room are:</h2>
       <ul>
         {players.map(player => (
-          <li>
+          <li key={params.id}>
             {player.name}
           </li>
         ))}

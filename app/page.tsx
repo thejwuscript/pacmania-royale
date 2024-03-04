@@ -40,11 +40,30 @@ export default function Home() {
       setConnectedUsers(connectedUsers.filter(connectedUser => connectedUser.name !== user.name))
     }
 
+    function onGameroomCreated(id: string, maxPlayerCount: number) {
+      setGamerooms(gamerooms => [...gamerooms, { id, maxPlayerCount, currentPlayerCount: 0 }])
+    }
+
+    function onGameroomPlayerCount(id: string, currentPlayerCount: number) {
+      setGamerooms(gamerooms => gamerooms.map(gameroom => {
+        if (gameroom.id == id) {
+          return {
+            ...gameroom,
+            currentPlayerCount
+          }
+        } else {
+          return gameroom
+        }
+      }))
+    }
+
     socket.on("connected", onConnect)
     socket.on("update user list", onUpdateUserList)
     socket.on('current user data', setCurrentUserData)
     socket.on("chat messages", onChatMessage)
     socket.on("disconnected", onUserDisconnect)
+    socket.on("gameroom created", onGameroomCreated)
+    socket.on("gameroom player count", onGameroomPlayerCount)
 
     return () => {
       socket.off("connected", onConnect)
@@ -52,6 +71,8 @@ export default function Home() {
       socket.off('current user data', setCurrentUserData)
       socket.off("chat messages", onChatMessage)
       socket.off("disconnected", onUserDisconnect)
+      socket.off("gameroom created", onGameroomCreated)
+      socket.off("gameroom player count", onGameroomPlayerCount)
     }
   }, [])
 
@@ -85,7 +106,7 @@ export default function Home() {
         </button>
         <LobbyGameroomListLayout>
           {gamerooms.map(gameroom => (
-            <LobbyGameroomListItem {...gameroom} />
+            <LobbyGameroomListItem key={gameroom.id} {...gameroom} />
           ))}
         </LobbyGameroomListLayout>
       </div>
