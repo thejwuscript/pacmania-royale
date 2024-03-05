@@ -3,6 +3,7 @@ import { Inter, Press_Start_2P } from "next/font/google";
 import "./globals.css";
 import ThemeProvider from "@/components/ThemeProvider";
 import SocketProvider from "@/components/SocketProvider";
+import NavigationEvents from "@/components/NavigationEvents";
 
 const inter = Inter({ subsets: ["latin"] });
 const pressStart2P = Press_Start_2P({
@@ -24,6 +25,7 @@ export default function RootLayout({
   return (
     <html suppressHydrationWarning lang="en" className={pressStart2P.variable}>
       <body className={inter.className}>
+        <NavigationEvents />
         <SocketProvider>
           <ThemeProvider
             attribute="class"
