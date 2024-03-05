@@ -81,7 +81,7 @@ export default function Home() {
   }, [])
 
   const handleCreateGameClick = async (e: React.MouseEvent) => {
-    const formData = { maxPlayerCount: 2 }
+    const formData = { maxPlayerCount: 2, socketId: socket.id }
     const res = await fetch(`${process.env.NEXT_PUBLIC_SOCKETIO_URL}/gameroom`, {
       method: 'POST',
       headers: {
