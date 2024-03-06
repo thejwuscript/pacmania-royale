@@ -38,8 +38,8 @@ export default function Gameroom({ params }: { params: { id: string } }) {
       <h1>Welcome to game room {params.id}</h1>
       <h2>Players in this room are:</h2>
       <ul>
-        {players.map((player) => (
-          <li key={params.id}>{player.name}</li>
+        {players.map((player, index) => (
+          <li key={index}>{player.name}</li>
         ))}
       </ul>
       {!hostPresent && (
