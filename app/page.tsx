@@ -17,6 +17,7 @@ export default function Home() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
   const [gamerooms, setGamerooms] = useState<Gameroom[]>([]);
+  const [creatingGameroom, setCreatingGameroom] = useState(false);
 
   useEffect(() => {
     function onConnect(user: User) {
@@ -81,6 +82,7 @@ export default function Home() {
   }, [])
 
   const handleCreateGameClick = async (e: React.MouseEvent) => {
+    setCreatingGameroom(true);
     const formData = { maxPlayerCount: 2, socketId: socket.id }
     const res = await fetch(`${process.env.NEXT_PUBLIC_SOCKETIO_URL}/gameroom`, {
       method: 'POST',
@@ -93,7 +95,7 @@ export default function Home() {
     router.push(`/gameroom/${data.id}`)
   }
 
-  if (!currentUser) {
+  if (!currentUser || creatingGameroom) {
     return <Loader />
   }
 
