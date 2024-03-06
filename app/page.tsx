@@ -58,6 +58,10 @@ export default function Home() {
       }))
     }
 
+    function onGameroomDeleted(id: string) {
+      setGamerooms(gamerooms => gamerooms.filter(gameroom => gameroom.id !== id))
+    }
+
     socket.on("connected", onConnect)
     socket.on("update user list", onUpdateUserList)
     socket.on('current user data', setCurrentUserData)
@@ -65,6 +69,7 @@ export default function Home() {
     socket.on("disconnected", onUserDisconnect)
     socket.on("gameroom created", onGameroomCreated)
     socket.on("gameroom player count", onGameroomPlayerCount)
+    socket.on("gameroom deleted", onGameroomDeleted)
 
     return () => {
       socket.off("connected", onConnect)
