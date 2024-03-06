@@ -8,13 +8,13 @@ import NavigationEvents from "@/components/NavigationEvents";
 const inter = Inter({ subsets: ["latin"] });
 const pressStart2P = Press_Start_2P({
   weight: "400",
-  subsets: ['latin'],
-  variable: '--font-press-start-2p'
-})
+  subsets: ["latin"],
+  variable: "--font-press-start-2p",
+});
 
 export const metadata: Metadata = {
   title: "Placeholder",
-  description: "placeholder"
+  description: "placeholder",
 };
 
 export default function RootLayout({
@@ -27,12 +27,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <NavigationEvents />
         <SocketProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
+          <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
             {children}
           </ThemeProvider>
         </SocketProvider>
