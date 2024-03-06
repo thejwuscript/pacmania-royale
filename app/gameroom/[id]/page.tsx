@@ -14,26 +14,32 @@ export default function Gameroom({ params }: { params: { id: string } }) {
   const [hostPresent, setHostPresent] = useState(true);
 
   useEffect(() => {
-    function onPlayersJoined(players: Player[]) {
+    const onPlayersJoined = (players: Player[]) => {
       setPlayers(players);
-    }
+    };
 
-    function onHostLeft() {
+    const onHostLeft = () => {
       setHostPresent(false);
-    }
+    };
+
+    const onPlayerLeft = (name: string) => {
+      setPlayers(players.filter((player) => player.name !== name));
+    };
 
     socket.emit("join gameroom", params.id, 2, (err: Error) => {
       console.log(err.message);
     });
     socket.on("players joined", onPlayersJoined);
     socket.on("host left", onHostLeft);
+    socket.on("player left", onPlayerLeft);
 
     return () => {
       // socket.emit("leave gameroom", params.id);
       socket.off("players joined", onPlayersJoined);
       socket.off("host left", onHostLeft);
+      socket.off("player left", onPlayerLeft);
     };
-  }, []);
+  }, [players, hostPresent]);
 
   return (
     <div>
