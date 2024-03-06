@@ -27,7 +27,7 @@ export default function Gameroom({ params }: { params: { id: string } }) {
     };
 
     socket.emit("join gameroom", params.id, 2, (err: Error) => {
-      console.log(err.message);
+      console.error(err.message);
     });
     socket.on("players joined", onPlayersJoined);
     socket.on("host left", onHostLeft);
