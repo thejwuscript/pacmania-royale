@@ -1,16 +1,12 @@
 import type { Metadata } from "next";
-import { Inter, Press_Start_2P } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import ThemeProvider from "@/components/ThemeProvider";
 import SocketProvider from "@/components/SocketProvider";
 import NavigationEvents from "@/components/NavigationEvents";
 
-const inter = Inter({ subsets: ["latin"] });
-const pressStart2P = Press_Start_2P({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-press-start-2p",
-});
+const pressStart2P = localFont({ src: "../fonts/PressStart2P-Regular.ttf", variable: "--font-press-start-2p" });
+const inter = localFont({ src: "../fonts/Inter-VariableFont.ttf" });
 
 export const metadata: Metadata = {
   title: "Placeholder",
