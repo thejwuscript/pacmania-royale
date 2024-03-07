@@ -1,14 +1,14 @@
-'use client'
+"use client";
 
-import { useState, useEffect, useContext } from 'react';
-import ConnectedUsersList from '@/components/ConnectedUsersList';
-import ChatBox from '@/components/ChatBox';
-import { Message, User, Gameroom } from '@/types/common';
-import Loader from '@/components/Loader';
-import { useRouter } from 'next/navigation';
-import { SocketContext } from '@/components/SocketProvider';
-import LobbyGameroomListLayout from '@/components/LobbyGameroomListLayout';
-import LobbyGameroomListItem from '@/components/LobbyGameroomListItem';
+import { useState, useEffect, useContext } from "react";
+import ConnectedUsersList from "@/components/ConnectedUsersList";
+import ChatBox from "@/components/ChatBox";
+import { Message, User, Gameroom } from "@/types/common";
+import Loader from "@/components/Loader";
+import { useRouter } from "next/navigation";
+import { SocketContext } from "@/components/SocketProvider";
+import LobbyGameroomListLayout from "@/components/LobbyGameroomListLayout";
+import LobbyGameroomListItem from "@/components/LobbyGameroomListItem";
 
 export default function Home() {
   const socket = useContext(SocketContext);
@@ -20,99 +20,113 @@ export default function Home() {
   const [creatingGameroom, setCreatingGameroom] = useState(false);
 
   useEffect(() => {
+    const fetchGamerooms = async () => {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SOCKETIO_URL}/gamerooms`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const gamerooms = response.json();
+      return gamerooms;
+    };
+
+    fetchGamerooms().then((data) => setGamerooms(data));
+  }, []);
+
+  useEffect(() => {
     function onConnect(user: User) {
-      setChatMessages(prev => [{ content: `User ${user.name} has connected.` }, ...prev])
+      setChatMessages((prev) => [{ content: `User ${user.name} has connected.` }, ...prev]);
     }
 
     function onUpdateUserList(users: User[]) {
-      setConnectedUsers(users)
+      setConnectedUsers(users);
     }
 
     function setCurrentUserData(data: User) {
-      setCurrentUser(data)
+      setCurrentUser(data);
     }
 
     function onChatMessage(message: string, username: string) {
-      setChatMessages(prev => [{ sender: username, content: message }, ...prev])
+      setChatMessages((prev) => [{ sender: username, content: message }, ...prev]);
     }
 
     function onUserDisconnect(user: User) {
-      setChatMessages(prev => [{ content: `User ${user.name} has disconnected.` }, ...prev])
-      setConnectedUsers(connectedUsers.filter(connectedUser => connectedUser.name !== user.name))
+      setChatMessages((prev) => [{ content: `User ${user.name} has disconnected.` }, ...prev]);
+      setConnectedUsers(connectedUsers.filter((connectedUser) => connectedUser.name !== user.name));
     }
 
     function onGameroomCreated(id: string, maxPlayerCount: number) {
-      setGamerooms(gamerooms => [...gamerooms, { id, maxPlayerCount, currentPlayerCount: 0 }])
+      setGamerooms((gamerooms) => [...gamerooms, { id, maxPlayerCount, currentPlayerCount: 0 }]);
     }
 
     function onGameroomPlayerCount(id: string, currentPlayerCount: number) {
-      setGamerooms(gamerooms => gamerooms.map(gameroom => {
-        if (gameroom.id == id) {
-          return {
-            ...gameroom,
-            currentPlayerCount
+      setGamerooms((gamerooms) =>
+        gamerooms.map((gameroom) => {
+          if (gameroom.id == id) {
+            return {
+              ...gameroom,
+              currentPlayerCount,
+            };
+          } else {
+            return gameroom;
           }
-        } else {
-          return gameroom
-        }
-      }))
+        })
+      );
     }
 
     function onGameroomDeleted(id: string) {
-      setGamerooms(gamerooms => gamerooms.filter(gameroom => gameroom.id !== id))
+      setGamerooms((gamerooms) => gamerooms.filter((gameroom) => gameroom.id !== id));
     }
 
-    socket.on("connected", onConnect)
-    socket.on("update user list", onUpdateUserList)
-    socket.on('current user data', setCurrentUserData)
-    socket.on("chat messages", onChatMessage)
-    socket.on("disconnected", onUserDisconnect)
-    socket.on("gameroom created", onGameroomCreated)
-    socket.on("gameroom player count", onGameroomPlayerCount)
-    socket.on("gameroom deleted", onGameroomDeleted)
+    socket.on("connected", onConnect);
+    socket.on("update user list", onUpdateUserList);
+    socket.on("current user data", setCurrentUserData);
+    socket.on("chat messages", onChatMessage);
+    socket.on("disconnected", onUserDisconnect);
+    socket.on("gameroom created", onGameroomCreated);
+    socket.on("gameroom player count", onGameroomPlayerCount);
+    socket.on("gameroom deleted", onGameroomDeleted);
 
     return () => {
-      socket.off("connected", onConnect)
-      socket.off("update user list", onUpdateUserList)
-      socket.off('current user data', setCurrentUserData)
-      socket.off("chat messages", onChatMessage)
-      socket.off("disconnected", onUserDisconnect)
-      socket.off("gameroom created", onGameroomCreated)
-      socket.off("gameroom player count", onGameroomPlayerCount)
-    }
-  }, [])
+      socket.off("connected", onConnect);
+      socket.off("update user list", onUpdateUserList);
+      socket.off("current user data", setCurrentUserData);
+      socket.off("chat messages", onChatMessage);
+      socket.off("disconnected", onUserDisconnect);
+      socket.off("gameroom created", onGameroomCreated);
+      socket.off("gameroom player count", onGameroomPlayerCount);
+    };
+  }, []);
 
   useEffect(() => {
-    socket.emit("join lobby")
-  }, [])
+    socket.emit("join lobby");
+  }, []);
 
   const handleCreateGameClick = async (e: React.MouseEvent) => {
     setCreatingGameroom(true);
-    const formData = { maxPlayerCount: 2, socketId: socket.id }
+    const formData = { maxPlayerCount: 2, socketId: socket.id };
     const res = await fetch(`${process.env.NEXT_PUBLIC_SOCKETIO_URL}/gameroom`, {
-      method: 'POST',
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData)
-    })
+      body: JSON.stringify(formData),
+    });
     const data = await res.json();
-    router.push(`/gameroom/${data.id}`)
-  }
+    router.push(`/gameroom/${data.id}`);
+  };
 
   if (!currentUser || creatingGameroom) {
-    return <Loader />
+    return <Loader />;
   }
 
   return (
-    <div className='w-full h-screen grid grid-cols-[3fr_1fr] gap-4 grid-rows-[80px,1fr,minmax(30%,300px)] px-2 py-2'>
-      <h1 className='col-span-2 row-span-1 font-retro flex justify-center items-center text-xl'>Game Lobby</h1>
-      <div className='row-start-2 row-end-3 col-span-1 p-4'>
-        <button onClick={handleCreateGameClick}>
-          Create Game
-        </button>
+    <div className="w-full h-screen grid grid-cols-[3fr_1fr] gap-4 grid-rows-[80px,1fr,minmax(30%,300px)] px-2 py-2">
+      <h1 className="col-span-2 row-span-1 font-retro flex justify-center items-center text-xl">Game Lobby</h1>
+      <div className="row-start-2 row-end-3 col-span-1 p-4">
+        <button onClick={handleCreateGameClick}>Create Game</button>
         <LobbyGameroomListLayout>
-          {gamerooms.map(gameroom => (
+          {gamerooms.map((gameroom) => (
             <LobbyGameroomListItem key={gameroom.id} {...gameroom} />
           ))}
         </LobbyGameroomListLayout>
