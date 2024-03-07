@@ -51,10 +51,10 @@ export default function Gameroom({ params }: { params: { id: string } }) {
   }, [players]);
 
   return (
-    <div>
-      <h1 className="text-4xl font-bold text-gray-900">Game Room #{params.id}</h1>
-      <h2>Players in this room are:</h2>
-      <ul>
+    <div className="px-2">
+      <h1 className="text-4xl font-bold text-gray-900 my-8">Game Room #{params.id}</h1>
+      <h2 className="underline underline-offset-1 font-semibold text-gray-900 text-xl my-4">Players</h2>
+      <ul className="flex flex-col gap-1">
         {players.map((player, index) => (
           <li key={index}>{player.name}</li>
         ))}
