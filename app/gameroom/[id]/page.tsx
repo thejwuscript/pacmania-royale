@@ -15,7 +15,7 @@ interface AppError {
 export default function Gameroom({ params }: { params: { id: string } }) {
   const socket = useContext(SocketContext);
   const [players, setPlayers] = useState<Player[]>([]);
-  const [hostPresent, setHostPresent] = useState(true);
+  // const [hostPresent, setHostPresent] = useState(true);
   const [error, setError] = useState<AppError | null>(null);
 
   useEffect(() => {
@@ -30,7 +30,8 @@ export default function Gameroom({ params }: { params: { id: string } }) {
     };
 
     const onHostLeft = () => {
-      setHostPresent(false);
+      // setHostPresent(false);
+      setError({ message: "The host has left the room." });
     };
 
     const onPlayerLeft = (name: string) => {
@@ -47,7 +48,7 @@ export default function Gameroom({ params }: { params: { id: string } }) {
       socket.off("host left", onHostLeft);
       socket.off("player left", onPlayerLeft);
     };
-  }, [players, hostPresent]);
+  }, [players]);
 
   return (
     <div>
@@ -58,16 +59,6 @@ export default function Gameroom({ params }: { params: { id: string } }) {
           <li key={index}>{player.name}</li>
         ))}
       </ul>
-      {!hostPresent && (
-        <div className="fixed top-0 left-0 w-full h-full backdrop-filter backdrop-blur-sm flex justify-center items-center">
-          <div className="bg-white rounded-md p-5 shadow-md flex flex-col justify-center items-center text-lg">
-            <p className="p-2 text-lg">The host has left the room.</p>
-            <Link href="/">
-              <Button className="text-lg">Return to Lobby</Button>
-            </Link>
-          </div>
-        </div>
-      )}
       {error && (
         <div className="fixed top-0 left-0 w-full h-full backdrop-filter backdrop-blur-sm flex justify-center items-center">
           <div className="bg-white rounded-md p-5 shadow-md flex flex-col justify-center items-center text-lg">
