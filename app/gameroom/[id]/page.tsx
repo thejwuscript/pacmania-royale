@@ -52,7 +52,7 @@ export default function Gameroom({ params }: { params: { id: string } }) {
 
   return (
     <div>
-      <h1>Welcome to game room {params.id}</h1>
+      <h1 className="text-4xl font-bold text-gray-900">Game Room #{params.id}</h1>
       <h2>Players in this room are:</h2>
       <ul>
         {players.map((player, index) => (

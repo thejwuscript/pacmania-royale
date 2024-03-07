@@ -124,7 +124,7 @@ export default function Home() {
     <div className="w-full h-screen grid grid-cols-[3fr_1fr] gap-4 grid-rows-[80px,1fr,minmax(30%,300px)] px-2 py-2">
       <h1 className="col-span-2 row-span-1 font-retro flex justify-center items-center text-xl">Game Lobby</h1>
       <div className="row-start-2 row-end-3 col-span-1 p-4">
-        <button onClick={handleCreateGameClick}>Create Game</button>
+        <button onClick={handleCreateGameClick} className="hover:underline underline-offset-2">Create Game</button>
         <LobbyGameroomListLayout>
           {gamerooms.map((gameroom) => (
             <LobbyGameroomListItem key={gameroom.id} {...gameroom} />

@@ -1,17 +1,18 @@
-import Link from "next/link"
+import Link from "next/link";
 
 interface LobbyGameroomListItemProps {
-  id: string,
-  maxPlayerCount: number,
-  currentPlayerCount: number,
+  id: string;
+  maxPlayerCount: number;
+  currentPlayerCount: number;
 }
 
-export default function LobbyGameroomListItem({id, maxPlayerCount, currentPlayerCount}: LobbyGameroomListItemProps) {
+export default function LobbyGameroomListItem({ id, maxPlayerCount, currentPlayerCount }: LobbyGameroomListItemProps) {
   return (
-    <Link href={`/gameroom/${id}`}>
-      <li>
-        Game Room id is {id}, Players {currentPlayerCount}/{maxPlayerCount}
-      </li>
-    </Link>
-  )
+    <li className="max-w-[400px] flex justify-around">
+      <div>
+        Game Room #{id}, Players {currentPlayerCount}/{maxPlayerCount}
+      </div>
+      <Link href={`/gameroom/${id}`} className="hover:underline underline-offset-2">Join Room</Link>
+    </li>
+  );
 }
