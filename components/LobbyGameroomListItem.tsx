@@ -12,7 +12,13 @@ export default function LobbyGameroomListItem({ id, maxPlayerCount, currentPlaye
       <div>
         Game Room #{id}, Players {currentPlayerCount}/{maxPlayerCount}
       </div>
-      <Link href={`/gameroom/${id}`} className="hover:underline underline-offset-2">Join Room</Link>
+      {currentPlayerCount >= maxPlayerCount ? (
+        <div className="italic">Room Full</div>
+      ) : (
+        <Link href={`/gameroom/${id}`} className="hover:underline underline-offset-2">
+          Join Room
+        </Link>
+      )}
     </li>
   );
 }
