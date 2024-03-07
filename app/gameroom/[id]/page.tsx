@@ -19,7 +19,7 @@ export default function Gameroom({ params }: { params: { id: string } }) {
   const [error, setError] = useState<AppError | null>(null);
 
   useEffect(() => {
-    socket.emit("join gameroom", params.id, 2, (err: Error) => {
+    socket.emit("join gameroom", params.id, (err: Error) => {
       setError({ message: err.message });
     });
   }, []);
