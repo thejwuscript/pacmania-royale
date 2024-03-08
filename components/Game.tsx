@@ -1,11 +1,18 @@
 import { useEffect } from "react";
 import * as Phaser from "phaser";
+import { Player } from "@/app/gameroom/[id]/page";
+import { Socket } from "socket.io-client";
 
 type GameConfig = Phaser.Types.Core.GameConfig;
 type SpriteWithDynamicBody = Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 type CursorKeys = Phaser.Types.Input.Keyboard.CursorKeys;
 
-export default function Game() {
+interface GameProps {
+  players: Player[];
+  socket: Socket;
+}
+
+export default function Game({ players, socket }: GameProps) {
   useEffect(() => {
     const config: GameConfig = {
       type: Phaser.AUTO,
@@ -25,7 +32,8 @@ export default function Game() {
       },
     };
 
-    let player: SpriteWithDynamicBody;
+    let playerOne: SpriteWithDynamicBody;
+    let playerTwo: SpriteWithDynamicBody;
     let cursors: CursorKeys;
 
     function preload(this: Phaser.Scene) {
@@ -33,8 +41,11 @@ export default function Game() {
     }
 
     function create(this: Phaser.Scene) {
-      player = this.physics.add.sprite(100, 450, "pacman-atlas", "sprite30");
-      player.setCollideWorldBounds(true);
+      //add players here
+      playerOne = this.physics.add.sprite(100, 450, "pacman-atlas", "sprite30");
+      playerTwo = this.physics.add.sprite(700, 150, "pacman-atlas", "sprite30");
+      playerOne.setCollideWorldBounds(true);
+      playerTwo.setCollideWorldBounds(true);
 
       this.anims.create({
         key: "left",
@@ -73,24 +84,24 @@ export default function Game() {
       cursors = this.input.keyboard!.createCursorKeys();
 
       if (cursors.left.isDown) {
-        player.setVelocityY(0);
-        player.setVelocityX(-160);
-        player.anims.play("left", true);
+        playerOne.setVelocityY(0);
+        playerOne.setVelocityX(-160);
+        playerOne.anims.play("left", true);
       } else if (cursors.right.isDown) {
-        player.setVelocityY(0);
-        player.setVelocityX(160);
-        player.anims.play("right", true);
+        playerOne.setVelocityY(0);
+        playerOne.setVelocityX(160);
+        playerOne.anims.play("right", true);
       } else if (cursors.up.isDown) {
-        player.setVelocityX(0);
-        player.setVelocityY(-160);
-        player.anims.play("up", true);
+        playerOne.setVelocityX(0);
+        playerOne.setVelocityY(-160);
+        playerOne.anims.play("up", true);
       } else if (cursors.down.isDown) {
-        player.setVelocityX(0);
-        player.setVelocityY(160);
-        player.anims.play("down", true);
+        playerOne.setVelocityX(0);
+        playerOne.setVelocityY(160);
+        playerOne.anims.play("down", true);
       } else {
-        player.setVelocityX(0);
-        player.setVelocityY(0);
+        playerOne.setVelocityX(0);
+        playerOne.setVelocityY(0);
       }
     }
 
