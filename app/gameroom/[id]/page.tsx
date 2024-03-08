@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Game from "@/components/Game";
 
-type Player = User;
+export type Player = User;
 
 interface AppError {
   message: string;
@@ -44,7 +44,6 @@ export default function Gameroom({ params }: { params: { id: string } }) {
     socket.on("player left", onPlayerLeft);
 
     return () => {
-      // socket.emit("leave gameroom", params.id);
       socket.off("players joined", onPlayersJoined);
       socket.off("host left", onHostLeft);
       socket.off("player left", onPlayerLeft);
@@ -60,8 +59,8 @@ export default function Gameroom({ params }: { params: { id: string } }) {
           <li key={index}>{player.name}</li>
         ))}
       </ul>
-      <Game />
-      {/* {error && (
+      {/* <Game players={players} socket={socket} /> */}
+      {error && (
         <div className="fixed top-0 left-0 w-full h-full backdrop-filter backdrop-blur-sm flex justify-center items-center">
           <div className="bg-white rounded-md p-5 shadow-md flex flex-col justify-center items-center text-lg">
             <p className="p-2 text-lg">{error.message}</p>
@@ -70,7 +69,7 @@ export default function Gameroom({ params }: { params: { id: string } }) {
             </Link>
           </div>
         </div>
-      )} */}
+      )}
     </div>
   );
 }
