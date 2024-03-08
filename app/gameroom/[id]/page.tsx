@@ -5,6 +5,7 @@ import type { User } from "@/types/common";
 import { SocketContext } from "@/components/SocketProvider";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import Game from "@/components/Game";
 
 type Player = User;
 
@@ -59,7 +60,8 @@ export default function Gameroom({ params }: { params: { id: string } }) {
           <li key={index}>{player.name}</li>
         ))}
       </ul>
-      {error && (
+      <Game />
+      {/* {error && (
         <div className="fixed top-0 left-0 w-full h-full backdrop-filter backdrop-blur-sm flex justify-center items-center">
           <div className="bg-white rounded-md p-5 shadow-md flex flex-col justify-center items-center text-lg">
             <p className="p-2 text-lg">{error.message}</p>
@@ -68,7 +70,7 @@ export default function Gameroom({ params }: { params: { id: string } }) {
             </Link>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
