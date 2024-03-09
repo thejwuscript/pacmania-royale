@@ -21,12 +21,14 @@ export default function Game({ players, socket, gameroomId }: GameProps) {
       name: playerOne.name,
       position: null,
       orientation: null,
+      sprite: null,
     },
     [playerTwo.id]: {
       id: playerTwo.id,
       name: playerTwo.name,
       position: null,
       orientation: null,
+      sprite: null,
     },
   });
 
@@ -64,13 +66,21 @@ export default function Game({ players, socket, gameroomId }: GameProps) {
           players[id].orientation === "right" ? "sprite30" : "sprite134"
         );
         sprite.setCollideWorldBounds(true);
+        players[id].sprite = sprite;
       });
       playersRef.current = players;
     }
 
+    // function onPlayerMoved(players: any) {
+    //   playersRef.current = players;
+    // }
+
     function create(this: Phaser.Scene) {
-      socket.on("assigned initial positions", (players) => onCurrentPlayers(this, players));
-      socket.emit("get initial positions", gameroomId);
+      socket.emit("get initial positions", gameroomId, (players: any) => {
+        onCurrentPlayers(this, players);
+      });
+
+      // socket.on("player moved", (players) => onPlayerMoved(players));
 
       this.anims.create({
         key: "left",
@@ -106,27 +116,30 @@ export default function Game({ players, socket, gameroomId }: GameProps) {
     }
 
     function update(this: Phaser.Scene) {
-      // cursors = this.input.keyboard!.createCursorKeys();
-      // if (cursors.left.isDown) {
-      //   playerOne.setVelocityY(0);
-      //   playerOne.setVelocityX(-160);
-      //   playerOne.anims.play("left", true);
-      // } else if (cursors.right.isDown) {
-      //   playerOne.setVelocityY(0);
-      //   playerOne.setVelocityX(160);
-      //   playerOne.anims.play("right", true);
-      // } else if (cursors.up.isDown) {
-      //   playerOne.setVelocityX(0);
-      //   playerOne.setVelocityY(-160);
-      //   playerOne.anims.play("up", true);
-      // } else if (cursors.down.isDown) {
-      //   playerOne.setVelocityX(0);
-      //   playerOne.setVelocityY(160);
-      //   playerOne.anims.play("down", true);
-      // } else {
-      //   playerOne.setVelocityX(0);
-      //   playerOne.setVelocityY(0);
-      // }
+      cursors = this.input.keyboard!.createCursorKeys();
+      const playerMeSprite = playersRef.current[socket.id!].sprite as any;
+      if (!playerMeSprite) return;
+
+      if (cursors.left.isDown) {
+        playerMeSprite.setVelocityY(0);
+        playerMeSprite.setVelocityX(-160);
+        playerMeSprite.anims.play("left", true);
+      } else if (cursors.right.isDown) {
+        playerMeSprite.setVelocityY(0);
+        playerMeSprite.setVelocityX(160);
+        playerMeSprite.anims.play("right", true);
+      } else if (cursors.up.isDown) {
+        playerMeSprite.setVelocityX(0);
+        playerMeSprite.setVelocityY(-160);
+        playerMeSprite.anims.play("up", true);
+      } else if (cursors.down.isDown) {
+        playerMeSprite.setVelocityX(0);
+        playerMeSprite.setVelocityY(160);
+        playerMeSprite.anims.play("down", true);
+      } else {
+        playerMeSprite.setVelocityX(0);
+        playerMeSprite.setVelocityY(0);
+      }
     }
 
     const game = new Phaser.Game(config);
