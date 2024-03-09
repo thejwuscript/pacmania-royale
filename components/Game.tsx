@@ -58,6 +58,7 @@ export default function Game({ players, gameroomId }: GameProps) {
     }
 
     function onCurrentPlayers(scene: Phaser.Scene, players: any) {
+      const sprites: any[] = [];
       Object.keys(players).forEach((id) => {
         const sprite = scene.physics.add.sprite(
           players[id].position.x,
@@ -66,9 +67,12 @@ export default function Game({ players, gameroomId }: GameProps) {
           players[id].orientation === "right" ? "sprite30" : "sprite134"
         );
         sprite.setCollideWorldBounds(true);
+        sprite.body.setBounce(1)
         players[id].sprite = sprite;
+        sprites.push(sprite);
       });
       playersRef.current = players;
+      scene.physics.add.collider(sprites[0], sprites[1]);
     }
 
     function onPlayerMoved(player: any) {
@@ -166,7 +170,7 @@ export default function Game({ players, gameroomId }: GameProps) {
       }
     }
 
-    const game = new Phaser.Game(config);
+    var game = new Phaser.Game(config);
 
     return () => {
       game.destroy(true);
