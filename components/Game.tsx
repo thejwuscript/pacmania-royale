@@ -73,12 +73,13 @@ export default function Game({ players, gameroomId }: GameProps) {
 
     function onPlayerMoved(player: any) {
       const sprite = playersRef.current[player.id].sprite as any;
-      const prevX = sprite.x
-      const prevY = sprite.y
+      const prevX = sprite.x;
+      const prevY = sprite.y;
       if (Math.round(player.position.x - prevX) > 0) {
         // look right
         sprite.anims.play("right", true);
       } else if (Math.round(player.position.x - prevX) < 0) {
+        // look left
         sprite.anims.play("left", true);
       } else if (Math.round(player.position.y - prevY) > 0) {
         // look down
