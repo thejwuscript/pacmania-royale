@@ -1,7 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useContext } from "react";
 import * as Phaser from "phaser";
 import { Player } from "@/app/gameroom/[id]/page";
-import { Socket } from "socket.io-client";
+import { SocketContext } from "./SocketProvider";
 
 type GameConfig = Phaser.Types.Core.GameConfig;
 type SpriteWithDynamicBody = Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
@@ -9,11 +9,11 @@ type CursorKeys = Phaser.Types.Input.Keyboard.CursorKeys;
 
 interface GameProps {
   players: Player[];
-  socket: Socket;
   gameroomId: string;
 }
 
-export default function Game({ players, socket, gameroomId }: GameProps) {
+export default function Game({ players, gameroomId }: GameProps) {
+  const socket = useContext(SocketContext);
   const [playerOne, playerTwo] = players;
   const playersRef = useRef({
     [playerOne.id]: {
@@ -71,16 +71,17 @@ export default function Game({ players, socket, gameroomId }: GameProps) {
       playersRef.current = players;
     }
 
-    // function onPlayerMoved(players: any) {
-    //   playersRef.current = players;
-    // }
+    function onPlayerMoved(player: any) {
+      playersRef.current[player.id].sprite!.x = player.position.x;
+      playersRef.current[player.id].sprite!.y = player.position.y;
+    }
 
     function create(this: Phaser.Scene) {
       socket.emit("get initial positions", gameroomId, (players: any) => {
         onCurrentPlayers(this, players);
       });
 
-      // socket.on("player moved", (players) => onPlayerMoved(players));
+      socket.on("player moved", (player) => onPlayerMoved(player));
 
       this.anims.create({
         key: "left",
@@ -139,6 +140,13 @@ export default function Game({ players, socket, gameroomId }: GameProps) {
       } else {
         playerMeSprite.setVelocityX(0);
         playerMeSprite.setVelocityY(0);
+      }
+
+      const prevPosition = playersRef.current[socket.id!].position as any;
+      if (prevPosition && (prevPosition.x !== playerMeSprite.x || prevPosition.y !== playerMeSprite.y)) {
+        socket.emit("player movement", gameroomId, socket.id, { x: playerMeSprite.x, y: playerMeSprite.y });
+        prevPosition.x = playerMeSprite.x;
+        prevPosition.y = playerMeSprite.y;
       }
     }
 
