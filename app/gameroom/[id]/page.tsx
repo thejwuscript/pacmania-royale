@@ -18,11 +18,23 @@ export default function Gameroom({ params }: { params: { id: string } }) {
   const [players, setPlayers] = useState<Player[]>([]);
   // const [hostPresent, setHostPresent] = useState(true);
   const [error, setError] = useState<AppError | null>(null);
+  const [gameStarted, setGameStarted] = useState(false);
 
   useEffect(() => {
     socket.emit("join gameroom", params.id, (err: Error) => {
       setError({ message: err.message });
     });
+  }, []);
+
+  useEffect(() => {
+    function onStartGame() {
+      setGameStarted(true);
+    }
+    socket.on("start game", onStartGame);
+
+    return () => {
+      socket.off("start game", onStartGame);
+    };
   }, []);
 
   useEffect(() => {
@@ -50,6 +62,10 @@ export default function Gameroom({ params }: { params: { id: string } }) {
     };
   }, [players]);
 
+  const handleStartGameClick = () => {
+    socket.emit("game start", params.id);
+  };
+
   return (
     <div className="px-2">
       <h1 className="text-4xl font-bold text-gray-900 my-8">Game Room #{params.id}</h1>
@@ -59,7 +75,12 @@ export default function Gameroom({ params }: { params: { id: string } }) {
           <li key={index}>{player.name}</li>
         ))}
       </ul>
-      {/* <Game players={players} socket={socket} /> */}
+      {players.length >= 2 && (
+        <Button className="text-lg" onClick={handleStartGameClick}>
+          Start Game
+        </Button>
+      )}
+      {gameStarted && <Game players={players} socket={socket} gameroomId={params.id} />}
       {error && (
         <div className="fixed top-0 left-0 w-full h-full backdrop-filter backdrop-blur-sm flex justify-center items-center">
           <div className="bg-white rounded-md p-5 shadow-md flex flex-col justify-center items-center text-lg">

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import * as Phaser from "phaser";
 import { Player } from "@/app/gameroom/[id]/page";
 import { Socket } from "socket.io-client";
@@ -10,9 +10,26 @@ type CursorKeys = Phaser.Types.Input.Keyboard.CursorKeys;
 interface GameProps {
   players: Player[];
   socket: Socket;
+  gameroomId: string;
 }
 
-export default function Game({ players, socket }: GameProps) {
+export default function Game({ players, socket, gameroomId }: GameProps) {
+  const [playerOne, playerTwo] = players;
+  const playersRef = useRef({
+    [playerOne.id]: {
+      id: playerOne.id,
+      name: playerOne.name,
+      position: null,
+      orientation: null,
+    },
+    [playerTwo.id]: {
+      id: playerTwo.id,
+      name: playerTwo.name,
+      position: null,
+      orientation: null,
+    },
+  });
+
   useEffect(() => {
     const config: GameConfig = {
       type: Phaser.AUTO,
@@ -32,20 +49,28 @@ export default function Game({ players, socket }: GameProps) {
       },
     };
 
-    let playerOne: SpriteWithDynamicBody;
-    let playerTwo: SpriteWithDynamicBody;
     let cursors: CursorKeys;
 
     function preload(this: Phaser.Scene) {
       this.load.atlas("pacman-atlas", "/assets/texture_atlas.png", "/assets/spriteatlas.json");
     }
 
+    function onCurrentPlayers(scene: Phaser.Scene, players: any) {
+      Object.keys(players).forEach((id) => {
+        const sprite = scene.physics.add.sprite(
+          players[id].position.x,
+          players[id].position.y,
+          "pacman-atlas",
+          players[id].orientation === "right" ? "sprite30" : "sprite134"
+        );
+        sprite.setCollideWorldBounds(true);
+      });
+      playersRef.current = players;
+    }
+
     function create(this: Phaser.Scene) {
-      //add players here
-      playerOne = this.physics.add.sprite(100, 450, "pacman-atlas", "sprite30");
-      playerTwo = this.physics.add.sprite(700, 150, "pacman-atlas", "sprite30");
-      playerOne.setCollideWorldBounds(true);
-      playerTwo.setCollideWorldBounds(true);
+      socket.on("assigned initial positions", (players) => onCurrentPlayers(this, players));
+      socket.emit("get initial positions", gameroomId);
 
       this.anims.create({
         key: "left",
@@ -81,34 +106,34 @@ export default function Game({ players, socket }: GameProps) {
     }
 
     function update(this: Phaser.Scene) {
-      cursors = this.input.keyboard!.createCursorKeys();
-
-      if (cursors.left.isDown) {
-        playerOne.setVelocityY(0);
-        playerOne.setVelocityX(-160);
-        playerOne.anims.play("left", true);
-      } else if (cursors.right.isDown) {
-        playerOne.setVelocityY(0);
-        playerOne.setVelocityX(160);
-        playerOne.anims.play("right", true);
-      } else if (cursors.up.isDown) {
-        playerOne.setVelocityX(0);
-        playerOne.setVelocityY(-160);
-        playerOne.anims.play("up", true);
-      } else if (cursors.down.isDown) {
-        playerOne.setVelocityX(0);
-        playerOne.setVelocityY(160);
-        playerOne.anims.play("down", true);
-      } else {
-        playerOne.setVelocityX(0);
-        playerOne.setVelocityY(0);
-      }
+      // cursors = this.input.keyboard!.createCursorKeys();
+      // if (cursors.left.isDown) {
+      //   playerOne.setVelocityY(0);
+      //   playerOne.setVelocityX(-160);
+      //   playerOne.anims.play("left", true);
+      // } else if (cursors.right.isDown) {
+      //   playerOne.setVelocityY(0);
+      //   playerOne.setVelocityX(160);
+      //   playerOne.anims.play("right", true);
+      // } else if (cursors.up.isDown) {
+      //   playerOne.setVelocityX(0);
+      //   playerOne.setVelocityY(-160);
+      //   playerOne.anims.play("up", true);
+      // } else if (cursors.down.isDown) {
+      //   playerOne.setVelocityX(0);
+      //   playerOne.setVelocityY(160);
+      //   playerOne.anims.play("down", true);
+      // } else {
+      //   playerOne.setVelocityX(0);
+      //   playerOne.setVelocityY(0);
+      // }
     }
 
     const game = new Phaser.Game(config);
 
     return () => {
       game.destroy(true);
+      socket.off("current players");
     };
   }, []);
 
