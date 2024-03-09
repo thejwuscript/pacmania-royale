@@ -72,8 +72,23 @@ export default function Game({ players, gameroomId }: GameProps) {
     }
 
     function onPlayerMoved(player: any) {
-      playersRef.current[player.id].sprite!.x = player.position.x;
-      playersRef.current[player.id].sprite!.y = player.position.y;
+      const sprite = playersRef.current[player.id].sprite as any;
+      const prevX = sprite.x
+      const prevY = sprite.y
+      if (Math.round(player.position.x - prevX) > 0) {
+        // look right
+        sprite.anims.play("right", true);
+      } else if (Math.round(player.position.x - prevX) < 0) {
+        sprite.anims.play("left", true);
+      } else if (Math.round(player.position.y - prevY) > 0) {
+        // look down
+        sprite.anims.play("down", true);
+      } else if (Math.round(player.position.y - prevY) < 0) {
+        // look up
+        sprite.anims.play("up", true);
+      }
+      sprite.x = player.position.x;
+      sprite.y = player.position.y;
     }
 
     function create(this: Phaser.Scene) {
