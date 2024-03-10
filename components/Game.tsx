@@ -94,9 +94,23 @@ export default function Game({ players, gameroomId }: GameProps) {
     function handlePlayerCollision(player1: any, player2: any) {
       // check if one is bigger than the other
       if (player1.scaleX > player2.scaleX) {
-        player2.destroy();
+        player2.setVelocity(0);
+        player2.setImmovable(true);
+        player2.on("animationcomplete", (animation: any) => {
+          if (animation.key === "defeat") {
+            player2.destroy();
+          }
+        });
+        player2.anims.play("defeat");
       } else if (player2.scaleX > player1.scaleX) {
-        player1.destroy();
+        player1.setVelocity(0);
+        player1.setImmovable(true);
+        player1.on("animationcomplete", (animation: any) => {
+          if (animation.key === "defeat") {
+            player1.destroy();
+          }
+        });
+        player1.anims.play("defeat");
       }
     }
 
@@ -158,6 +172,15 @@ export default function Game({ players, gameroomId }: GameProps) {
           prefix: "sprite",
           frames: [60, 76, 98],
         }),
+      });
+
+      this.anims.create({
+        key: "defeat",
+        frames: this.anims.generateFrameNames("pacman-atlas", {
+          prefix: "sprite",
+          frames: [16, 32, 47, 63, 80, 104, 122, 140, 149, 157],
+        }),
+        frameRate: 5,
       });
     }
 
