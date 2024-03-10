@@ -6,6 +6,8 @@ import { SocketContext } from "./SocketProvider";
 type GameConfig = Phaser.Types.Core.GameConfig;
 type SpriteWithDynamicBody = Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 type CursorKeys = Phaser.Types.Input.Keyboard.CursorKeys;
+type GameObjectWithBody = Phaser.Types.Physics.Arcade.GameObjectWithBody;
+type Tile = Phaser.Tilemaps.Tile;
 
 interface GameProps {
   players: Player[];
@@ -31,6 +33,8 @@ export default function Game({ players, gameroomId }: GameProps) {
       sprite: null,
     },
   });
+  const totalTimeElapsedRef = useRef(0.0);
+  const fruitAppearedRef = useRef(false);
 
   useEffect(() => {
     const config: GameConfig = {
@@ -72,7 +76,15 @@ export default function Game({ players, gameroomId }: GameProps) {
         sprites.push(sprite);
       });
       playersRef.current = players;
-      scene.physics.add.collider(sprites[0], sprites[1]);
+  
+      const cherry = scene.physics.add.sprite(100, 100, "pacman-atlas", "sprite2")
+
+      scene.physics.add.collider(sprites[0], sprites[1])
+      scene.physics.add.overlap(sprites, cherry, gainPower);
+    }
+
+    function gainPower(player: Tile | GameObjectWithBody, fruit: Tile | GameObjectWithBody) {
+      // code here
     }
 
     function onPlayerMoved(player: any) {
