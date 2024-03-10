@@ -24,6 +24,7 @@ export default function Game({ players, gameroomId }: GameProps) {
       position: null,
       orientation: null,
       sprite: null,
+      nameText: null,
     },
     [playerTwo.id]: {
       id: playerTwo.id,
@@ -31,6 +32,7 @@ export default function Game({ players, gameroomId }: GameProps) {
       position: null,
       orientation: null,
       sprite: null,
+      nameText: null,
     },
   });
   const totalTimeElapsedRef = useRef(0.0);
@@ -73,6 +75,9 @@ export default function Game({ players, gameroomId }: GameProps) {
         sprite.setCollideWorldBounds(true);
         sprite.body.setBounce(1);
         players[id].sprite = sprite;
+        const nameText = scene.add.text(sprite.x, sprite.y + sprite.displayHeight + 10, players[id].name)
+        players[id].nameText = nameText;
+        nameText.setOrigin(0.5, 1);
         sprites.push(sprite);
       });
       playersRef.current = players;
@@ -116,6 +121,7 @@ export default function Game({ players, gameroomId }: GameProps) {
 
     function onPlayerMoved(player: any) {
       const sprite = playersRef.current[player.id].sprite as any;
+      const nameText = playersRef.current[player.id].nameText as any;
       const prevX = sprite.x;
       const prevY = sprite.y;
       if (Math.round(player.position.x - prevX) > 0) {
@@ -131,6 +137,8 @@ export default function Game({ players, gameroomId }: GameProps) {
         // look up
         sprite.anims.play("up", true);
       }
+      nameText.x = player.position.x;
+      nameText.y = player.position.y + sprite.displayHeight + 10;
       sprite.x = player.position.x;
       sprite.y = player.position.y;
     }
@@ -187,7 +195,8 @@ export default function Game({ players, gameroomId }: GameProps) {
     function update(this: Phaser.Scene) {
       cursors = this.input.keyboard!.createCursorKeys();
       const playerMeSprite = playersRef.current[socket.id!].sprite as any;
-      if (!playerMeSprite) return;
+      const nameText = playersRef.current[socket.id!].nameText as any;
+      if (!playerMeSprite || !nameText) return;
 
       if (cursors.left.isDown) {
         playerMeSprite.setVelocityY(0);
@@ -209,6 +218,9 @@ export default function Game({ players, gameroomId }: GameProps) {
         playerMeSprite.setVelocityX(0);
         playerMeSprite.setVelocityY(0);
       }
+
+      nameText.x = playerMeSprite.x;
+      nameText.y = playerMeSprite.y + playerMeSprite.displayHeight + 10;
 
       const prevPosition = playersRef.current[socket.id!].position as any;
       if (prevPosition && (prevPosition.x !== playerMeSprite.x || prevPosition.y !== playerMeSprite.y)) {
