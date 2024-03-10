@@ -71,20 +71,33 @@ export default function Game({ players, gameroomId }: GameProps) {
           players[id].orientation === "right" ? "sprite30" : "sprite134"
         );
         sprite.setCollideWorldBounds(true);
-        sprite.body.setBounce(1)
+        sprite.body.setBounce(1);
         players[id].sprite = sprite;
         sprites.push(sprite);
       });
       playersRef.current = players;
-  
-      const cherry = scene.physics.add.sprite(100, 100, "pacman-atlas", "sprite2")
 
-      scene.physics.add.collider(sprites[0], sprites[1])
+      const cherry = scene.physics.add.sprite(100, 100, "pacman-atlas", "sprite2");
+
+      scene.physics.add.collider(sprites[0], sprites[1], handlePlayerCollision);
       scene.physics.add.overlap(sprites, cherry, gainPower);
     }
 
-    function gainPower(player: Tile | GameObjectWithBody, fruit: Tile | GameObjectWithBody) {
-      // code here
+    function gainPower(player: any, fruit: any) {
+      // hide fruit
+      // enlarge player sprite
+      fruit.destroy();
+      player.setScale(2);
+      console.log("overlapping");
+    }
+
+    function handlePlayerCollision(player1: any, player2: any) {
+      // check if one is bigger than the other
+      if (player1.scaleX > player2.scaleX) {
+        player2.destroy();
+      } else if (player2.scaleX > player1.scaleX) {
+        player1.destroy();
+      }
     }
 
     function onPlayerMoved(player: any) {
