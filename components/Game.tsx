@@ -75,7 +75,7 @@ export default function Game({ players, gameroomId }: GameProps) {
         sprite.setCollideWorldBounds(true);
         sprite.body.setBounce(1);
         players[id].sprite = sprite;
-        const nameText = scene.add.text(sprite.x, sprite.y + sprite.displayHeight + 10, players[id].name)
+        const nameText = scene.add.text(sprite.x, sprite.y + sprite.displayHeight + 10, players[id].name);
         players[id].nameText = nameText;
         nameText.setOrigin(0.5, 1);
         sprites.push(sprite);
@@ -84,7 +84,7 @@ export default function Game({ players, gameroomId }: GameProps) {
 
       const cherry = scene.physics.add.sprite(100, 100, "pacman-atlas", "sprite2");
 
-      scene.physics.add.collider(sprites[0], sprites[1], handlePlayerCollision);
+      scene.physics.add.collider(sprites[0], sprites[1], handlePlayerCollision, () => true, scene);
       scene.physics.add.overlap(sprites, cherry, gainPower);
     }
 
@@ -93,14 +93,16 @@ export default function Game({ players, gameroomId }: GameProps) {
       // enlarge player sprite
       fruit.destroy();
       player.setScale(2);
-      console.log("overlapping");
     }
 
-    function handlePlayerCollision(player1: any, player2: any) {
+    function handlePlayerCollision(this: Phaser.Scene, player1: any, player2: any) {
       // check if one is bigger than the other
+
       if (player1.scaleX > player2.scaleX) {
-        player2.setVelocity(0);
-        player2.setImmovable(true);
+        this.input.keyboard!.enabled = false;
+        player1.body.enable = false;
+        player2.body.enable = false;
+        player1.anims.pause();
         player2.on("animationcomplete", (animation: any) => {
           if (animation.key === "defeat") {
             player2.destroy();
@@ -108,8 +110,10 @@ export default function Game({ players, gameroomId }: GameProps) {
         });
         player2.anims.play("defeat");
       } else if (player2.scaleX > player1.scaleX) {
-        player1.setVelocity(0);
-        player1.setImmovable(true);
+        this.input.keyboard!.enabled = false;
+        player1.body.enable = false;
+        player2.body.enable = false;
+        player2.anims.pause();
         player1.on("animationcomplete", (animation: any) => {
           if (animation.key === "defeat") {
             player1.destroy();
@@ -197,6 +201,9 @@ export default function Game({ players, gameroomId }: GameProps) {
       const playerMeSprite = playersRef.current[socket.id!].sprite as any;
       const nameText = playersRef.current[socket.id!].nameText as any;
       if (!playerMeSprite || !nameText) return;
+      if (playerMeSprite.anims.isPaused) {
+        return;
+      }
 
       if (cursors.left.isDown) {
         playerMeSprite.setVelocityY(0);
