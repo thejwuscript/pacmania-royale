@@ -7,7 +7,9 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Game from "@/components/Game";
 
-export type Player = User;
+export type Player = User & {
+  color: string;
+};
 
 interface AppError {
   message: string;
@@ -72,7 +74,10 @@ export default function Gameroom({ params }: { params: { id: string } }) {
       <h2 className="underline underline-offset-1 font-semibold text-gray-900 text-xl my-4">Players</h2>
       <ul className="flex flex-col gap-1">
         {players.map((player, index) => (
-          <li key={index}>{player.name}</li>
+          <li key={index}>
+            {player.name}{" "}
+            <span className="inline-block w-3 h-3" style={{ backgroundColor: player.color.replace("0x", "#") }}></span>
+          </li>
         ))}
       </ul>
       {players.length >= 2 && (

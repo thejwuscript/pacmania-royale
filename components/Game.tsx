@@ -72,6 +72,7 @@ export default function Game({ players, gameroomId }: GameProps) {
           "pacman-atlas",
           players[id].orientation === "right" ? "sprite30" : "sprite134"
         );
+        sprite.tint = players[id].color;
         sprite.setCollideWorldBounds(true);
         sprite.body.setBounce(1);
         players[id].sprite = sprite;
