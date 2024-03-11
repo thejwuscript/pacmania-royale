@@ -18,7 +18,7 @@ interface AppError {
 export default function Gameroom({ params }: { params: { id: string } }) {
   const socket = useContext(SocketContext);
   const [players, setPlayers] = useState<Player[]>([]);
-  // const [hostPresent, setHostPresent] = useState(true);
+  const [hostId, setHostId] = useState("");
   const [error, setError] = useState<AppError | null>(null);
   const [gameStarted, setGameStarted] = useState(false);
 
@@ -40,8 +40,9 @@ export default function Gameroom({ params }: { params: { id: string } }) {
   }, []);
 
   useEffect(() => {
-    const onPlayersJoined = (players: Player[]) => {
+    const onPlayersJoined = (players: Player[], hostId: string) => {
       setPlayers(players);
+      setHostId(hostId);
     };
 
     const onHostLeft = () => {
@@ -76,7 +77,8 @@ export default function Gameroom({ params }: { params: { id: string } }) {
         {players.map((player, index) => (
           <li key={index}>
             {player.name}{" "}
-            <span className="inline-block w-3 h-3" style={{ backgroundColor: player.color.replace("0x", "#") }}></span>
+            <span className="inline-block w-3 h-3" style={{ backgroundColor: player.color.replace("0x", "#") }}></span>{" "}
+            {player.id === hostId && <span>Host</span>}
           </li>
         ))}
       </ul>
