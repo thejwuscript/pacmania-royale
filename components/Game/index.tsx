@@ -1,7 +1,7 @@
 import { useEffect, useRef, useContext } from "react";
 import * as Phaser from "phaser";
 import { Player } from "@/app/gameroom/[id]/page";
-import { SocketContext } from "./SocketProvider";
+import { SocketContext } from "../SocketProvider";
 
 type GameConfig = Phaser.Types.Core.GameConfig;
 type SpriteWithDynamicBody = Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;

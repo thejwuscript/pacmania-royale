@@ -5,7 +5,7 @@ import type { User } from "@/types/common";
 import { SocketContext } from "@/components/SocketProvider";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import Game from "@/components/Game";
+import Game from "@/components/Game/index";
 
 export type Player = User & {
   color: string;
