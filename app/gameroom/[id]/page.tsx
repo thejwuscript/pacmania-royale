@@ -84,10 +84,6 @@ export default function Gameroom({ params }: { params: { id: string } }) {
     socket.emit("game start", params.id);
   };
 
-  const handleReturnToLobbyClick = () => {
-    // socket.emit("leave gameroom", params.id);
-  };
-
   return (
     <div className="px-2">
       <h1 className="text-4xl font-bold text-gray-900 my-8">Game Room #{params.id}</h1>
