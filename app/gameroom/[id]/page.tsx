@@ -82,7 +82,7 @@ export default function Gameroom({ params }: { params: { id: string } }) {
       <ul className="flex flex-col gap-1">
         {players.map((player, index) => (
           <li key={index}>
-            {player.name}{" "}
+            {player.id === socket.id ? <b>{player.name}</b> : player.name}{" "}
             <span className="inline-block w-3 h-3" style={{ backgroundColor: player.color.replace("0x", "#") }}></span>{" "}
             {player.id === hostId && <span>Host</span>}
           </li>
