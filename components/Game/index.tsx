@@ -104,12 +104,12 @@ export default function Game({ players, gameroomId }: GameProps) {
         player1.body.enable = false;
         player2.body.enable = false;
         player1.anims.pause();
-        player2.on("animationcomplete", (animation: any) => {
-          if (animation.key === "defeat") {
-            player2.destroy();
-          }
-        });
-        player2.anims.play("defeat");
+        // player2.on("animationcomplete", (animation: any) => {
+        //   if (animation.key === "defeat") {
+        //     player2.destroy();
+        //   }
+        // });
+        // player2.anims.play("defeat");
         // emit then broadcast
         const socketId = Object.values(playersRef.current).find((player) => player.sprite === player2)!.id;
         socket.emit("player defeat", gameroomId, socketId);
@@ -118,12 +118,12 @@ export default function Game({ players, gameroomId }: GameProps) {
         player1.body.enable = false;
         player2.body.enable = false;
         player2.anims.pause();
-        player1.on("animationcomplete", (animation: any) => {
-          if (animation.key === "defeat") {
-            player1.destroy();
-          }
-        });
-        player1.anims.play("defeat");
+        // player1.on("animationcomplete", (animation: any) => {
+        //   if (animation.key === "defeat") {
+        //     player1.destroy();
+        //   }
+        // });
+        // player1.anims.play("defeat");
         // emit then broadcast
         const socketId = Object.values(playersRef.current).find((player) => player.sprite === player1)!.id;
         socket.emit("player defeat", gameroomId, socketId);
@@ -156,9 +156,11 @@ export default function Game({ players, gameroomId }: GameProps) {
 
     function onPlayerDefeated(socketId: string) {
       const sprite = playersRef.current[socketId]!.sprite as any;
+      const nameText = playersRef.current[socketId]!.nameText as any;
       sprite.on("animationcomplete", (animation: any) => {
         if (animation.key === "defeat") {
           sprite.destroy();
+          nameText.destroy();
         }
       });
       if (sprite) {
