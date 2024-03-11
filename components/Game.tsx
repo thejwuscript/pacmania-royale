@@ -109,6 +109,9 @@ export default function Game({ players, gameroomId }: GameProps) {
           }
         });
         player2.anims.play("defeat");
+        // emit then broadcast
+        const socketId = Object.values(playersRef.current).find((player) => player.sprite === player2)!.id;
+        socket.emit("player defeat", gameroomId, socketId);
       } else if (player2.scaleX > player1.scaleX) {
         this.input.keyboard!.enabled = false;
         player1.body.enable = false;
@@ -120,6 +123,9 @@ export default function Game({ players, gameroomId }: GameProps) {
           }
         });
         player1.anims.play("defeat");
+        // emit then broadcast
+        const socketId = Object.values(playersRef.current).find((player) => player.sprite === player1)!.id;
+        socket.emit("player defeat", gameroomId, socketId);
       }
     }
 
@@ -147,12 +153,26 @@ export default function Game({ players, gameroomId }: GameProps) {
       sprite.y = player.position.y;
     }
 
+    function onPlayerDefeated(socketId: string) {
+      const sprite = playersRef.current[socketId]!.sprite as any;
+      sprite.on("animationcomplete", (animation: any) => {
+        if (animation.key === "defeat") {
+          sprite.destroy();
+        }
+      });
+      if (sprite) {
+        sprite.anims.play("defeat");
+      }
+    }
+
     function create(this: Phaser.Scene) {
       socket.emit("get initial positions", gameroomId, (players: any) => {
         onCurrentPlayers(this, players);
       });
 
       socket.on("player moved", (player) => onPlayerMoved(player));
+
+      socket.on("player defeated", onPlayerDefeated);
 
       this.anims.create({
         key: "left",
@@ -200,7 +220,7 @@ export default function Game({ players, gameroomId }: GameProps) {
       cursors = this.input.keyboard!.createCursorKeys();
       const playerMeSprite = playersRef.current[socket.id!].sprite as any;
       const nameText = playersRef.current[socket.id!].nameText as any;
-      if (!playerMeSprite || !nameText) return;
+      if (!playerMeSprite || !playerMeSprite.active || !nameText) return;
       if (playerMeSprite.anims.isPaused) {
         return;
       }
