@@ -68,6 +68,7 @@ export default function Gameroom({ params }: { params: { id: string } }) {
 
     const onHostLeft = () => {
       setError({ message: "The host has left the room." });
+      socket.emit("leave gameroom", params.id);
     };
 
     socket.on("players joined", onPlayersJoined);
@@ -84,7 +85,7 @@ export default function Gameroom({ params }: { params: { id: string } }) {
   };
 
   const handleReturnToLobbyClick = () => {
-    socket.emit("leave gameroom", params.id);
+    // socket.emit("leave gameroom", params.id);
   };
 
   return (
@@ -110,10 +111,8 @@ export default function Gameroom({ params }: { params: { id: string } }) {
         <div className="fixed top-0 left-0 w-full h-full backdrop-filter backdrop-blur-sm flex justify-center items-center">
           <div className="bg-white rounded-md p-5 shadow-md flex flex-col justify-center items-center text-lg">
             <p className="p-2 text-lg">{error.message}</p>
-            <Link href="/">
-              <Button className="text-lg" onClick={handleReturnToLobbyClick}>
-                Return to Lobby
-              </Button>
+            <Link className="text-lg" href="/">
+              <Button className="text-lg">Return to Lobby</Button>
             </Link>
           </div>
         </div>
