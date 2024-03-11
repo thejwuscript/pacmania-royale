@@ -29,6 +29,12 @@ export default function Gameroom({ params }: { params: { id: string } }) {
   }, []);
 
   useEffect(() => {
+    window.addEventListener("beforeunload", () => {
+      socket.emit("leave gameroom", params.id);
+    });
+  }, [hostId]);
+
+  useEffect(() => {
     function onStartGame() {
       setGameStarted(true);
     }
