@@ -46,6 +46,21 @@ export default function Gameroom({ params }: { params: { id: string } }) {
   }, []);
 
   useEffect(() => {
+    const onPlayerLeft = (name: string) => {
+      if (gameStarted) {
+        setError({ message: "Your opponent has left the game." });
+      } else {
+        setPlayers(players.filter((player) => player.name !== name));
+      }
+    };
+    socket.on("player left", onPlayerLeft);
+
+    return () => {
+      socket.off("player left", onPlayerLeft);
+    };
+  }, [players, gameStarted]);
+
+  useEffect(() => {
     const onPlayersJoined = (players: Player[], hostId: string) => {
       setPlayers(players);
       setHostId(hostId);
@@ -55,20 +70,14 @@ export default function Gameroom({ params }: { params: { id: string } }) {
       setError({ message: "The host has left the room." });
     };
 
-    const onPlayerLeft = (name: string) => {
-      setPlayers(players.filter((player) => player.name !== name));
-    };
-
     socket.on("players joined", onPlayersJoined);
     socket.on("host left", onHostLeft);
-    socket.on("player left", onPlayerLeft);
 
     return () => {
       socket.off("players joined", onPlayersJoined);
       socket.off("host left", onHostLeft);
-      socket.off("player left", onPlayerLeft);
     };
-  }, [players]);
+  }, []);
 
   const handleStartGameClick = () => {
     socket.emit("game start", params.id);
@@ -96,7 +105,7 @@ export default function Gameroom({ params }: { params: { id: string } }) {
           Start Game
         </Button>
       )}
-      {gameStarted && <Game players={players} gameroomId={params.id} />}
+      {gameStarted && !error && <Game players={players} gameroomId={params.id} />}
       {error && (
         <div className="fixed top-0 left-0 w-full h-full backdrop-filter backdrop-blur-sm flex justify-center items-center">
           <div className="bg-white rounded-md p-5 shadow-md flex flex-col justify-center items-center text-lg">
