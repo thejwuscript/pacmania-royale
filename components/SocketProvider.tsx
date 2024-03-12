@@ -3,7 +3,7 @@
 import { createContext, ReactNode, useEffect } from 'react';
 import { io } from 'socket.io-client';
 
-const socket = io(process.env.NEXT_PUBLIC_SOCKETIO_URL, {
+export const socket = io(process.env.NEXT_PUBLIC_SOCKETIO_URL, {
   autoConnect: false
 })
 

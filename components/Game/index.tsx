@@ -264,7 +264,7 @@ export default function Game({ players, gameroomId }: GameProps) {
     // var game = new Phaser.Game(config);
 
     const game = StartGame();
-    game.scene.start('Preloader', {players})
+    game.scene.start('Preloader', {players, gameroomId})
 
     return () => {
       game.destroy(true);
