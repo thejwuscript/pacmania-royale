@@ -1,6 +1,5 @@
 import { Scene } from "phaser";
 import type { Player } from "@/app/gameroom/[id]/page";
-import { socket } from "@/components/SocketProvider";
 
 export class Preloader extends Scene {
   players: Player[];
@@ -16,7 +15,9 @@ export class Preloader extends Scene {
     if (!data) return;
 
     if (data.players) {
-      this.players = data.players;
+      this.players = data.players.map((player) => {
+        return { ...player, score: 0 };
+      });
     }
 
     if (data.gameroomId) {
@@ -29,13 +30,6 @@ export class Preloader extends Scene {
   }
 
   create() {
-    socket.emit("get initial positions", this.gameroomId, (players: any) => {
-      this.onCurrentPlayers(players);
-    });
-    this.scene.start("RoundInfo", { roundCount: 1, players: this.players });
-  }
-
-  onCurrentPlayers(players: any) {
-    console.log(players);
+    this.scene.start("RoundInfo", { roundCount: 1, players: this.players, gameroomId: this.gameroomId });
   }
 }

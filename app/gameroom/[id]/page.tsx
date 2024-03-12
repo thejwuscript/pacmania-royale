@@ -9,6 +9,7 @@ import Game from "@/components/Game/index";
 
 export type Player = User & {
   color: string;
+  score: number;
 };
 
 interface AppError {
