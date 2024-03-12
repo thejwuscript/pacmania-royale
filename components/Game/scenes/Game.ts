@@ -144,11 +144,18 @@ export class Game extends Scene {
         // nameText.destroy();
         this.players[winnerSocketId].score += 1;
         this.cleanup();
-        this.scene.start("RoundInfo", {
-          roundCount: this.roundCount + 1,
-          players: this.players,
-          gameroomId: this.gameroomId,
-        });
+        this.time.delayedCall(
+          500,
+          () => {
+            this.scene.start("RoundInfo", {
+              roundCount: this.roundCount + 1,
+              players: this.players,
+              gameroomId: this.gameroomId,
+            });
+          },
+          [],
+          this
+        );
       }
     });
     if (sprite) {
