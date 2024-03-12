@@ -1,17 +1,25 @@
 import { Scene } from "phaser";
+import type { Player } from "@/app/gameroom/[id]/page";
 
 export class RoundInfo extends Scene {
   roundCount: number;
-  players: any;
+  players: Player[];
 
   constructor() {
     super("RoundInfo");
     this.roundCount = 1;
+    this.players = [];
   }
 
-  init(data: { roundCount: number }) {
-    if (data && data.roundCount) {
+  init(data: { roundCount: number; players: Player[] }) {
+    if (!data) return;
+
+    if (data.roundCount) {
       this.roundCount = data.roundCount;
+    }
+
+    if (data.players) {
+      console.log(data.players);
     }
   }
 
@@ -28,7 +36,7 @@ export class RoundInfo extends Scene {
     roundText.setOrigin(0.5);
 
     this.time.delayedCall(
-      2000,
+      2500,
       () => {
         this.scene.start("Game");
       },
