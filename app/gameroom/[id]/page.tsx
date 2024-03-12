@@ -10,6 +10,8 @@ import Game from "@/components/Game/index";
 export type Player = User & {
   color: string;
   score: number;
+  sprite: Phaser.Physics.Arcade.Sprite;
+  position: { x: number; y: number };
 };
 
 interface AppError {
