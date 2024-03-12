@@ -61,13 +61,13 @@ export class RoundInfo extends Scene {
       .text(p2Sprite.x, p2Sprite.y + 60, this.players[1].score.toString(), scoreTextStyle)
       .setOrigin(0.5);
 
-    // this.time.delayedCall(
-    //   2500,
-    //   () => {
-    //     this.scene.start("Game");
-    //   },
-    //   [],
-    //   this
-    // );
+    this.time.delayedCall(
+      2500,
+      () => {
+        this.scene.start("Game", { roundcount: this.roundCount, players: this.players, gameroomId: this.gameroomId });
+      },
+      [],
+      this
+    );
   }
 }
