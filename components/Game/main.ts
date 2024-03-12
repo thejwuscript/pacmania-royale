@@ -1,4 +1,5 @@
 import * as Phaser from "phaser";
+import { Preloader } from "./scenes/Preloader";
 import { RoundInfo } from "./scenes/RoundInfo";
 import { Game } from "./scenes/Game";
 import { GameOver } from "./scenes/GameOver";
@@ -16,7 +17,7 @@ const config: GameConfig = {
       debug: false,
     },
   },
-  scene: [RoundInfo, Game, GameOver]
+  scene: [Preloader, RoundInfo, Game, GameOver]
 };
 
 function StartGame()  {
