@@ -6,6 +6,7 @@ export class Game extends Scene {
   roundCount: number;
   players: { [key: string]: Player };
   gameroomId: string;
+  cherry?: Phaser.Physics.Arcade.Sprite;
 
   constructor() {
     super("Game");
@@ -23,7 +24,7 @@ export class Game extends Scene {
   }
 
   create() {
-    const cherry = this.physics.add.sprite(100, 100, "pacman-atlas", "sprite2");
+    this.cherry = this.physics.add.sprite(100, 100, "pacman-atlas", "sprite2");
 
     socket.emit("get initial positions", this.gameroomId, (players: any) => {
       this.onCurrentPlayers(players);
@@ -31,7 +32,7 @@ export class Game extends Scene {
 
     socket.on("player moved", (player) => this.onPlayerMoved(player));
 
-    socket.on("player defeated", this.onPlayerDefeated);
+    socket.on("player defeated", (socketId) => this.onPlayerDefeated(socketId));
 
     this.anims.create({
       key: "left",
@@ -138,8 +139,8 @@ export class Game extends Scene {
 
     this.players = players;
 
-    // this.physics.add.collider(sprites[0], sprites[1], handlePlayerCollision, () => true, this);
-    // this.physics.add.overlap(sprites, cherry, gainPower);
+    this.physics.add.collider(sprites[0], sprites[1], this.handlePlayerCollision, () => true, this);
+    this.physics.add.overlap(sprites, this.cherry!, this.gainPower);
   }
 
   onPlayerMoved(player: any) {
@@ -178,5 +179,44 @@ export class Game extends Scene {
     if (sprite) {
       sprite.anims.play("defeat");
     }
+  }
+
+  handlePlayerCollision(player1: any, player2: any) {
+    // check if one is bigger than the other
+
+    if (player1.scaleX > player2.scaleX) {
+      this.input.keyboard!.enabled = false;
+      player1.body.enable = false;
+      player2.body.enable = false;
+      player1.anims.pause();
+      // player2.on("animationcomplete", (animation: any) => {
+      //   if (animation.key === "defeat") {
+      //     player2.destroy();
+      //   }
+      // });
+      // player2.anims.play("defeat");
+      // emit then broadcast
+      const socketId = Object.values(this.players).find((player) => player.sprite === player2)!.id;
+      socket.emit("player defeat", this.gameroomId, socketId);
+    } else if (player2.scaleX > player1.scaleX) {
+      this.input.keyboard!.enabled = false;
+      player1.body.enable = false;
+      player2.body.enable = false;
+      player2.anims.pause();
+      // player1.on("animationcomplete", (animation: any) => {
+      //   if (animation.key === "defeat") {
+      //     player1.destroy();
+      //   }
+      // });
+      // player1.anims.play("defeat");
+      // emit then broadcast
+      const socketId = Object.values(this.players).find((player) => player.sprite === player1)!.id;
+      socket.emit("player defeat", this.gameroomId, socketId);
+    }
+  }
+
+  gainPower(player: any, fruit: any) {
+    fruit.destroy();
+    player.setScale(2);
   }
 }
