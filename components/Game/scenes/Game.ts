@@ -32,7 +32,9 @@ export class Game extends Scene {
 
     socket.on("player moved", (player) => this.onPlayerMoved(player));
 
-    socket.on("player defeated", (socketId) => this.onPlayerDefeated(socketId));
+    socket.on("player defeated", (winnerSocketId, defeatedSocketId) => {
+      this.onPlayerDefeated(winnerSocketId, defeatedSocketId);
+    });
 
     this.anims.create({
       key: "left",
@@ -117,9 +119,13 @@ export class Game extends Scene {
     }
   }
 
+  cleanup() {
+    socket.off("player moved");
+    socket.off("player defeated");
+  }
+
   onCurrentPlayers(players: any) {
     const sprites: any[] = [];
-
     Object.keys(players).forEach((id) => {
       const sprite = this.physics.add.sprite(
         players[id].position.x,
@@ -134,10 +140,11 @@ export class Game extends Scene {
       // const nameText = this.add.text(sprite.x, sprite.y + sprite.displayHeight + 10, players[id].name);
       // players[id].nameText = nameText;
       // nameText.setOrigin(0.5, 1);
+      for (const id in players) {
+        this.players[id] = { ...this.players[id], ...players[id] };
+      }
       sprites.push(sprite);
     });
-
-    this.players = players;
 
     this.physics.add.collider(sprites[0], sprites[1], this.handlePlayerCollision, () => true, this);
     this.physics.add.overlap(sprites, this.cherry!, this.gainPower);
@@ -167,13 +174,20 @@ export class Game extends Scene {
     sprite.y = player.position.y;
   }
 
-  onPlayerDefeated(socketId: string) {
-    const sprite = this.players[socketId]!.sprite as any;
+  onPlayerDefeated(winnerSocketId: string, defeatedSocketId: string) {
+    const sprite = this.players[defeatedSocketId]?.sprite as any;
     // const nameText = this.players[socketId]!.nameText as any;
     sprite.on("animationcomplete", (animation: any) => {
       if (animation.key === "defeat") {
         sprite.destroy();
         // nameText.destroy();
+        this.players[winnerSocketId].score += 1;
+        this.cleanup();
+        this.scene.start("RoundInfo", {
+          roundCount: this.roundCount + 1,
+          players: this.players,
+          gameroomId: this.gameroomId,
+        });
       }
     });
     if (sprite) {
@@ -183,6 +197,8 @@ export class Game extends Scene {
 
   handlePlayerCollision(player1: any, player2: any) {
     // check if one is bigger than the other
+    let winnerSocketId: string = "";
+    let defeatedSocketId: string = "";
 
     if (player1.scaleX > player2.scaleX) {
       this.input.keyboard!.enabled = false;
@@ -196,8 +212,17 @@ export class Game extends Scene {
       // });
       // player2.anims.play("defeat");
       // emit then broadcast
-      const socketId = Object.values(this.players).find((player) => player.sprite === player2)!.id;
-      socket.emit("player defeat", this.gameroomId, socketId);
+      // const socketId = Object.values(this.players).find((player) => player.sprite === player2)!.id;
+
+      for (const socketId in this.players) {
+        if (this.players[socketId].sprite === player1) {
+          winnerSocketId = socketId;
+        } else if (this.players[socketId].sprite === player2) {
+          defeatedSocketId = socketId;
+        }
+      }
+
+      socket.emit("player defeat", this.gameroomId, winnerSocketId, defeatedSocketId);
     } else if (player2.scaleX > player1.scaleX) {
       this.input.keyboard!.enabled = false;
       player1.body.enable = false;
@@ -210,8 +235,18 @@ export class Game extends Scene {
       // });
       // player1.anims.play("defeat");
       // emit then broadcast
-      const socketId = Object.values(this.players).find((player) => player.sprite === player1)!.id;
-      socket.emit("player defeat", this.gameroomId, socketId);
+      // const defeatedSocketId = Object.values(this.players).find((player) => player.sprite === player1)!.id;
+      // const winnerSocketId = Object.values(this.players).find(player => )
+
+      for (const socketId in this.players) {
+        if (this.players[socketId].sprite === player2) {
+          winnerSocketId = socketId;
+        } else if (this.players[socketId].sprite === player1) {
+          defeatedSocketId = socketId;
+        }
+      }
+
+      socket.emit("player defeat", this.gameroomId, winnerSocketId, defeatedSocketId);
     }
   }
 
