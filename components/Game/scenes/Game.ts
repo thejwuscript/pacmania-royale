@@ -7,6 +7,7 @@ export class Game extends Scene {
   players: { [key: string]: Player };
   gameroomId: string;
   cherry?: Phaser.Physics.Arcade.Sprite;
+  cursors?: Phaser.Types.Input.Keyboard.CursorKeys;
 
   constructor() {
     super("Game");
@@ -24,6 +25,8 @@ export class Game extends Scene {
   }
 
   create() {
+    this.cursors = this.input.keyboard!.createCursorKeys();
+    this.input.keyboard!.enabled = true;
     this.cherry = this.physics.add.sprite(100, 100, "pacman-atlas", "sprite2");
 
     socket.emit("get initial positions", this.gameroomId, (players: any) => {
@@ -35,51 +38,9 @@ export class Game extends Scene {
     socket.on("player defeated", (winnerSocketId, defeatedSocketId) => {
       this.onPlayerDefeated(winnerSocketId, defeatedSocketId);
     });
-
-    this.anims.create({
-      key: "left",
-      frames: this.anims.generateFrameNames("pacman-atlas", {
-        prefix: "sprite",
-        frames: [117, 134, 144],
-      }),
-    });
-
-    this.anims.create({
-      key: "right",
-      frames: this.anims.generateFrameNames("pacman-atlas", {
-        prefix: "sprite",
-        frames: [14, 30, 45],
-      }),
-    });
-
-    this.anims.create({
-      key: "up",
-      frames: this.anims.generateFrameNames("pacman-atlas", {
-        prefix: "sprite",
-        frames: [154, 161, 178],
-      }),
-    });
-
-    this.anims.create({
-      key: "down",
-      frames: this.anims.generateFrameNames("pacman-atlas", {
-        prefix: "sprite",
-        frames: [60, 76, 98],
-      }),
-    });
-
-    this.anims.create({
-      key: "defeat",
-      frames: this.anims.generateFrameNames("pacman-atlas", {
-        prefix: "sprite",
-        frames: [16, 32, 47, 63, 80, 104, 122, 140, 149, 157],
-      }),
-      frameRate: 5,
-    });
   }
 
   update() {
-    const cursors = this.input.keyboard!.createCursorKeys();
     const playerMeSprite = this.players[socket.id!]?.sprite as any;
     // const nameText = this.players[socket.id!].nameText as any;
     if (!playerMeSprite || !playerMeSprite.active) return;
@@ -87,19 +48,19 @@ export class Game extends Scene {
       return;
     }
 
-    if (cursors.left.isDown) {
+    if (this.cursors?.left.isDown) {
       playerMeSprite.setVelocityY(0);
       playerMeSprite.setVelocityX(-160);
       playerMeSprite.anims.play("left", true);
-    } else if (cursors.right.isDown) {
+    } else if (this.cursors?.right.isDown) {
       playerMeSprite.setVelocityY(0);
       playerMeSprite.setVelocityX(160);
       playerMeSprite.anims.play("right", true);
-    } else if (cursors.up.isDown) {
+    } else if (this.cursors?.up.isDown) {
       playerMeSprite.setVelocityX(0);
       playerMeSprite.setVelocityY(-160);
       playerMeSprite.anims.play("up", true);
-    } else if (cursors.down.isDown) {
+    } else if (this.cursors?.down.isDown) {
       playerMeSprite.setVelocityX(0);
       playerMeSprite.setVelocityY(160);
       playerMeSprite.anims.play("down", true);

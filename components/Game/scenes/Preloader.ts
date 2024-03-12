@@ -33,6 +33,46 @@ export class Preloader extends Scene {
   }
 
   create() {
+    this.anims.create({
+      key: "left",
+      frames: this.anims.generateFrameNames("pacman-atlas", {
+        prefix: "sprite",
+        frames: [117, 134, 144],
+      }),
+    });
+
+    this.anims.create({
+      key: "right",
+      frames: this.anims.generateFrameNames("pacman-atlas", {
+        prefix: "sprite",
+        frames: [14, 30, 45],
+      }),
+    });
+
+    this.anims.create({
+      key: "up",
+      frames: this.anims.generateFrameNames("pacman-atlas", {
+        prefix: "sprite",
+        frames: [154, 161, 178],
+      }),
+    });
+
+    this.anims.create({
+      key: "down",
+      frames: this.anims.generateFrameNames("pacman-atlas", {
+        prefix: "sprite",
+        frames: [60, 76, 98],
+      }),
+    });
+
+    this.anims.create({
+      key: "defeat",
+      frames: this.anims.generateFrameNames("pacman-atlas", {
+        prefix: "sprite",
+        frames: [16, 32, 47, 63, 80, 104, 122, 140, 149, 157],
+      }),
+      frameRate: 5,
+    });
     this.scene.start("RoundInfo", { roundCount: 1, players: this.players, gameroomId: this.gameroomId });
   }
 }
