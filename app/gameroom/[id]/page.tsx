@@ -105,7 +105,7 @@ export default function Gameroom({ params }: { params: { id: string } }) {
           Start Game
         </Button>
       )}
-      {gameStarted && !error && <Game players={players} gameroomId={params.id} />}
+      {gameStarted && !error && <Game players={players} gameroomId={params.id} hostId={hostId} />}
       {error && (
         <div className="fixed top-0 left-0 w-full h-full backdrop-filter backdrop-blur-sm flex justify-center items-center">
           <div className="bg-white rounded-md p-5 shadow-md flex flex-col justify-center items-center text-lg">

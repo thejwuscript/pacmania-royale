@@ -13,9 +13,10 @@ type Tile = Phaser.Tilemaps.Tile;
 interface GameProps {
   players: Player[];
   gameroomId: string;
+  hostId: string;
 }
 
-export default function Game({ players, gameroomId }: GameProps) {
+export default function Game({ players, gameroomId, hostId }: GameProps) {
   const socket = useContext(SocketContext);
   const [playerOne, playerTwo] = players;
   const playersRef = useRef({
@@ -39,7 +40,7 @@ export default function Game({ players, gameroomId }: GameProps) {
 
   useEffect(() => {
     const game = StartGame();
-    game.scene.start("Preloader", { players, gameroomId });
+    game.scene.start("Preloader", { players, gameroomId, hostId });
 
     return () => {
       game.destroy(true);

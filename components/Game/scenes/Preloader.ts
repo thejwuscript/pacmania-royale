@@ -1,30 +1,26 @@
 import { Scene } from "phaser";
 import type { Player } from "@/app/gameroom/[id]/page";
+import { socket } from "@/components/SocketProvider";
 
 export class Preloader extends Scene {
-  players: { [key: string]: Player };
   gameroomId: string;
+  hostId: string;
 
   constructor() {
     super("Preloader");
-    this.players = {};
     this.gameroomId = "";
+    this.hostId = "";
   }
 
-  init(data: { players: Player[]; gameroomId: string }) {
+  init(data: { players: Player[]; gameroomId: string; hostId: string }) {
     if (!data) return;
-
-    if (data.players) {
-      const obj: { [key: string]: Player } = {};
-      data.players.forEach((player) => {
-        player.score = 0;
-        obj[player.id] = player;
-      });
-      this.players = obj;
-    }
 
     if (data.gameroomId) {
       this.gameroomId = data.gameroomId;
+    }
+
+    if (data.hostId) {
+      this.hostId = data.hostId;
     }
   }
 
@@ -73,6 +69,13 @@ export class Preloader extends Scene {
       }),
       frameRate: 5,
     });
-    this.scene.start("RoundInfo", { roundCount: 1, players: this.players, gameroomId: this.gameroomId });
+
+    socket.on("go to next round", (roundCount, players, gameroomId) => {
+      this.scene.start("RoundInfo", { roundCount, players, gameroomId });
+    });
+
+    if (socket.id === this.hostId) {
+      socket.emit("update round count", this.gameroomId);
+    }
   }
 }
