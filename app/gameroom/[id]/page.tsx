@@ -91,16 +91,18 @@ export default function Gameroom({ params }: { params: { id: string } }) {
     <div className="px-2">
       <h1 className="text-4xl font-bold text-gray-900 my-8">Game Room #{params.id}</h1>
       <h2 className="underline underline-offset-1 font-semibold text-gray-900 text-xl my-4">Players</h2>
-      <ul className="flex flex-col gap-1">
+      <ul className="flex flex-col gap-1 mb-5">
         {players.map((player, index) => (
-          <li key={index}>
-            {player.id === socket.id ? <b>{player.name}</b> : player.name}{" "}
-            <span className="inline-block w-3 h-3" style={{ backgroundColor: player.color.replace("0x", "#") }}></span>{" "}
-            {player.id === hostId && <span>Host</span>}
+          <li key={index} className="flex items-center gap-2">
+            {player.id === socket.id ? <b>{player.name}</b> : player.name} {player.id === hostId && <span>(Host)</span>}{" "}
+            <span
+              className="inline-block w-4 h-4 border border-black"
+              style={{ backgroundColor: player.color.replace("0x", "#") }}
+            ></span>
           </li>
         ))}
       </ul>
-      {players.length >= 2 && (
+      {players.length >= 2 && !gameStarted && (
         <Button className="text-lg" onClick={handleStartGameClick}>
           Start Game
         </Button>
