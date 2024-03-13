@@ -27,8 +27,8 @@ export class Game extends Scene {
   create() {
     this.cursors = this.input.keyboard!.createCursorKeys();
     this.input.keyboard!.enabled = true;
-    // this.cherry = this.physics.add.sprite(100, 100, "pacman-atlas", "sprite2");
 
+    socket.emit("reset fruit", this.gameroomId);
     socket.emit("get initial positions", this.gameroomId, (players: any) => {
       this.onCurrentPlayers(players);
     });
@@ -43,7 +43,7 @@ export class Game extends Scene {
 
     socket.on("fruit location", (x: number, y: number) => {
       this.cherry = this.physics.add.sprite(x, y, "pacman-atlas", "sprite2");
-      this.physics.add.overlap(this.getPlayerSprites(), this.cherry, this.gainPower);
+      this.physics.add.overlap(this.getPlayerSprites(), this.cherry, this.handleCherryCollision, () => true, this);
     });
 
     socket.on("go to next round", (roundCount, players, gameroomId) => {
@@ -52,6 +52,16 @@ export class Game extends Scene {
         players,
         gameroomId,
       });
+    });
+
+    socket.on("player power up", (id: string) => {
+      socket.emit("reset fruit", this.gameroomId);
+      this.players[id].sprite.setScale(2);
+    });
+
+    socket.on("player return to normal", (id: string) => {
+      this.players[id].sprite.setScale(1);
+      socket.emit("fruit timer", 2000, this.gameroomId);
     });
   }
 
@@ -231,9 +241,14 @@ export class Game extends Scene {
     }
   }
 
-  gainPower(player: any, fruit: any) {
-    fruit.destroy();
-    player.setScale(2);
+  handleCherryCollision(sprite: any, cherry: any) {
+    cherry.destroy();
+    for (const _ in this.players) {
+      // prevent other clients from firing the same event
+      if (this.players[socket.id!].sprite === sprite) {
+        socket.emit("got cherry", socket.id, this.gameroomId);
+      }
+    }
   }
 
   getPlayerSprites() {
