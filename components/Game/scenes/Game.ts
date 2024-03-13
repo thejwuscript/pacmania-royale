@@ -76,22 +76,22 @@ export class Game extends Scene {
 
     if (this.cursors?.left.isDown) {
       mySprite.setVelocityY(0);
-      const Vx = mySprite.scaleX > 1 ? -210 : -160;
+      const Vx = mySprite.scaleX > 1 ? -220 : -160;
       mySprite.setVelocityX(Vx);
       mySprite.anims.play("left", true);
     } else if (this.cursors?.right.isDown) {
       mySprite.setVelocityY(0);
-      const Vx = mySprite.scaleX > 1 ? 210 : 160;
+      const Vx = mySprite.scaleX > 1 ? 220 : 160;
       mySprite.setVelocityX(Vx);
       mySprite.anims.play("right", true);
     } else if (this.cursors?.up.isDown) {
       mySprite.setVelocityX(0);
-      const Vy = mySprite.scaleX > 1 ? -210 : -160;
+      const Vy = mySprite.scaleX > 1 ? -220 : -160;
       mySprite.setVelocityY(Vy);
       mySprite.anims.play("up", true);
     } else if (this.cursors?.down.isDown) {
       mySprite.setVelocityX(0);
-      const Vy = mySprite.scaleX > 1 ? 210 : 160;
+      const Vy = mySprite.scaleX > 1 ? 220 : 160;
       mySprite.setVelocityY(Vy);
       mySprite.anims.play("down", true);
     } else {
