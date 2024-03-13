@@ -55,6 +55,10 @@ export class Game extends Scene {
       });
     });
 
+    socket.on("game over", (winnerId: string) => {
+      this.scene.start("GameOver", { name: this.players[winnerId].name });
+    });
+
     socket.on("player power up", (id: string) => {
       socket.emit("reset fruit", this.gameroomId);
       this.players[id].sprite.setScale(2);
