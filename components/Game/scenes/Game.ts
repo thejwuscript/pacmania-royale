@@ -146,11 +146,14 @@ export class Game extends Scene {
   onPlayerDefeated(winnerSocketId: string, defeatedSocketId: string) {
     const sprite = this.players[defeatedSocketId]?.sprite as any;
     // const nameText = this.players[socketId]!.nameText as any;
+
+    socket.emit("win round", winnerSocketId, this.gameroomId);
+
     sprite.on("animationcomplete", (animation: any) => {
       if (animation.key === "defeat") {
         sprite.destroy();
         // nameText.destroy();
-        this.players[winnerSocketId].score += 1;
+        // this.players[winnerSocketId].score += 1;
         this.cleanup();
         this.time.delayedCall(
           500,
