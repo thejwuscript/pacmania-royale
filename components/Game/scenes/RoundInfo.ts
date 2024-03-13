@@ -51,17 +51,19 @@ export class RoundInfo extends Scene {
     };
 
     const playersAry = Object.values(this.players);
-    const p1Sprite = this.add.sprite(200, 200, "pacman-atlas", "sprite30").setOrigin(0.5);
+    const p1Sprite = this.add.sprite(200, 260, "pacman-atlas", "sprite30").setOrigin(0.5);
     p1Sprite.setTint(parseInt(playersAry[0].color, 16));
     const p1Score = this.add
-      .text(p1Sprite.x, p1Sprite.y + 60, playersAry[0].score.toString(), scoreTextStyle)
+      .text(p1Sprite.x, p1Sprite.y - 60, playersAry[0].score.toString(), scoreTextStyle)
       .setOrigin(0.5);
 
-    const p2Sprite = this.add.sprite(400, 200, "pacman-atlas", "sprite134").setOrigin(0.5);
+    const p2Sprite = this.add.sprite(400, 260, "pacman-atlas", "sprite134").setOrigin(0.5);
     p2Sprite.setTint(parseInt(playersAry[1].color, 16));
     const p2Score = this.add
-      .text(p2Sprite.x, p2Sprite.y + 60, playersAry[1].score.toString(), scoreTextStyle)
+      .text(p2Sprite.x, p2Sprite.y - 60, playersAry[1].score.toString(), scoreTextStyle)
       .setOrigin(0.5);
+    
+    const dash = this.add.text((p1Score.x + p2Score.x) / 2, p1Score.y, "-", scoreTextStyle).setOrigin(0.5)
 
     this.time.delayedCall(
       2500,
