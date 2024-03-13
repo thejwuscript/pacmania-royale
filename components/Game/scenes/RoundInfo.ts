@@ -35,14 +35,20 @@ export class RoundInfo extends Scene {
     const centerX = this.cameras.main.centerX;
     const centerY = this.cameras.main.centerY;
 
-    const roundText = this.add.text(centerX, centerY - 100, `Round ${this.roundCount}`, {
+    const roundTextStyle = {
       fontFamily: "Times New Roman",
       fontSize: "32px",
       color: "#fff",
       fontStyle: "normal",
       strokeThickness: 1,
-    });
+    };
+
+    const roundText = this.add.text(centerX, centerY - 100, `Round ${this.roundCount}`, roundTextStyle);
     roundText.setOrigin(0.5);
+
+    const bestOfTest = this.add
+      .text(centerX, roundText.y + 35, "(Best of 3)", { ...roundTextStyle, fontSize: "20px" })
+      .setOrigin(0.5);
 
     const scoreTextStyle: TextStyle = {
       fontFamily: "Times New Roman",
@@ -62,8 +68,8 @@ export class RoundInfo extends Scene {
     const p2Score = this.add
       .text(p2Sprite.x, p2Sprite.y - 60, playersAry[1].score.toString(), scoreTextStyle)
       .setOrigin(0.5);
-    
-    const dash = this.add.text((p1Score.x + p2Score.x) / 2, p1Score.y, "-", scoreTextStyle).setOrigin(0.5)
+
+    const dash = this.add.text((p1Score.x + p2Score.x) / 2, p1Score.y, "-", scoreTextStyle).setOrigin(0.5);
 
     this.time.delayedCall(
       2500,
