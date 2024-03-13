@@ -67,7 +67,7 @@ export class Preloader extends Scene {
         prefix: "sprite",
         frames: [16, 32, 47, 63, 80, 104, 122, 140, 149, 157],
       }),
-      frameRate: 6,
+      frameRate: 7,
     });
 
     socket.on("go to next round", (roundCount, players, gameroomId) => {
