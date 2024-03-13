@@ -45,6 +45,14 @@ export class Game extends Scene {
       this.cherry = this.physics.add.sprite(x, y, "pacman-atlas", "sprite2");
       this.physics.add.overlap(this.getPlayerSprites(), this.cherry, this.gainPower);
     });
+
+    socket.on("go to next round", (roundCount, players, gameroomId) => {
+      this.scene.start("RoundInfo", {
+        roundCount,
+        players,
+        gameroomId,
+      });
+    });
   }
 
   update() {
@@ -152,17 +160,11 @@ export class Game extends Scene {
     sprite.on("animationcomplete", (animation: any) => {
       if (animation.key === "defeat") {
         sprite.destroy();
-        // nameText.destroy();
-        // this.players[winnerSocketId].score += 1;
         this.cleanup();
         this.time.delayedCall(
           500,
           () => {
-            this.scene.start("RoundInfo", {
-              roundCount: this.roundCount + 1,
-              players: this.players,
-              gameroomId: this.gameroomId,
-            });
+            socket.emit("update round count", this.gameroomId);
           },
           [],
           this
