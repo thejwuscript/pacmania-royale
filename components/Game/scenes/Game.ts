@@ -42,6 +42,7 @@ export class Game extends Scene {
     socket.emit("fruit timer", 2000, this.gameroomId);
 
     socket.on("fruit location", (x: number, y: number) => {
+      this.cherry?.destroy();
       this.cherry = this.physics.add.sprite(x, y, "pacman-atlas", "sprite2");
       this.physics.add.overlap(this.getPlayerSprites(), this.cherry, this.handleCherryCollision, () => true, this);
     });
@@ -66,42 +67,43 @@ export class Game extends Scene {
   }
 
   update() {
-    const playerMeSprite = this.players[socket.id!]?.sprite as any;
+    const mySprite = this.players[socket.id!]?.sprite as any;
     // const nameText = this.players[socket.id!].nameText as any;
-    if (!playerMeSprite || !playerMeSprite.active) return;
-    if (playerMeSprite.anims.isPaused) {
+    if (!mySprite || !mySprite.active) return;
+    if (mySprite.anims.isPaused) {
       return;
     }
 
     if (this.cursors?.left.isDown) {
-      playerMeSprite.setVelocityY(0);
-      playerMeSprite.setVelocityX(-160);
-      playerMeSprite.anims.play("left", true);
+      mySprite.setVelocityY(0);
+      const Vx = mySprite.scaleX > 1 ? -210 : -160;
+      mySprite.setVelocityX(Vx);
+      mySprite.anims.play("left", true);
     } else if (this.cursors?.right.isDown) {
-      playerMeSprite.setVelocityY(0);
-      playerMeSprite.setVelocityX(160);
-      playerMeSprite.anims.play("right", true);
+      mySprite.setVelocityY(0);
+      const Vx = mySprite.scaleX > 1 ? 210 : 160;
+      mySprite.setVelocityX(Vx);
+      mySprite.anims.play("right", true);
     } else if (this.cursors?.up.isDown) {
-      playerMeSprite.setVelocityX(0);
-      playerMeSprite.setVelocityY(-160);
-      playerMeSprite.anims.play("up", true);
+      mySprite.setVelocityX(0);
+      const Vy = mySprite.scaleX > 1 ? -210 : -160;
+      mySprite.setVelocityY(Vy);
+      mySprite.anims.play("up", true);
     } else if (this.cursors?.down.isDown) {
-      playerMeSprite.setVelocityX(0);
-      playerMeSprite.setVelocityY(160);
-      playerMeSprite.anims.play("down", true);
+      mySprite.setVelocityX(0);
+      const Vy = mySprite.scaleX > 1 ? 210 : 160;
+      mySprite.setVelocityY(Vy);
+      mySprite.anims.play("down", true);
     } else {
-      playerMeSprite.setVelocityX(0);
-      playerMeSprite.setVelocityY(0);
+      mySprite.setVelocityX(0);
+      mySprite.setVelocityY(0);
     }
 
-    // nameText.x = playerMeSprite.x;
-    // nameText.y = playerMeSprite.y + playerMeSprite.displayHeight + 10;
-
     const prevPosition = this.players[socket.id!].position as any;
-    if (prevPosition && (prevPosition.x !== playerMeSprite.x || prevPosition.y !== playerMeSprite.y)) {
-      socket.emit("player movement", this.gameroomId, socket.id, { x: playerMeSprite.x, y: playerMeSprite.y });
-      prevPosition.x = playerMeSprite.x;
-      prevPosition.y = playerMeSprite.y;
+    if (prevPosition && (prevPosition.x !== mySprite.x || prevPosition.y !== mySprite.y)) {
+      socket.emit("player movement", this.gameroomId, socket.id, { x: mySprite.x, y: mySprite.y });
+      prevPosition.x = mySprite.x;
+      prevPosition.y = mySprite.y;
     }
   }
 
