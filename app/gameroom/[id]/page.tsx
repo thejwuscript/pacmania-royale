@@ -25,6 +25,9 @@ export default function Gameroom({ params }: { params: { id: string } }) {
   const [error, setError] = useState<AppError | null>(null);
   const [gameStarted, setGameStarted] = useState(false);
 
+  const host = socket.id === hostId;
+  const roomFull = players.length === 2;
+
   useEffect(() => {
     socket.emit("join gameroom", params.id, (err: Error) => {
       setError({ message: err.message });
@@ -102,10 +105,13 @@ export default function Gameroom({ params }: { params: { id: string } }) {
           </li>
         ))}
       </ul>
-      {players.length >= 2 && !gameStarted && (
+      {roomFull && host && !gameStarted && (
         <Button className="text-lg" onClick={handleStartGameClick}>
           Start Game
         </Button>
+      )}
+      {roomFull && !host && !gameStarted && (
+        <span>Waiting for the host to start the game...</span>
       )}
       {gameStarted && !error && <Game players={players} gameroomId={params.id} hostId={hostId} />}
       {error && (
