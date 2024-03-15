@@ -29,6 +29,28 @@ export class Preloader extends Scene {
   }
 
   create() {
+    this.loadingText = this.add
+      .text(this.cameras.main.centerX, this.cameras.main.centerY, "Loading ", { font: "32px Arial", fill: "#ffffff" })
+      .setOrigin(0.5);
+
+    this.dots = [];
+    for (let i = 0; i < 3; i++) {
+      const dot = this.add
+        .text(this.cameras.main.centerX + 60 + i * 20, this.cameras.main.centerY, ".", {
+          font: "32px Arial",
+          fill: "#ffffff",
+        })
+        .setOrigin(0.5);
+      this.dots.push(dot);
+    }
+
+    this.time.addEvent({
+      delay: 300,
+      callback: this.animateDots,
+      callbackScope: this,
+      loop: true,
+    });
+
     this.anims.create({
       key: "left",
       frames: this.anims.generateFrameNames("pacman-atlas", {
@@ -76,11 +98,18 @@ export class Preloader extends Scene {
 
     this.events.on("destroy", () => {
       socket.off("go to next round");
-      console.log("Removing socket listeners on Preloader scene");
     });
 
     if (socket.id === this.hostId) {
-      socket.emit("update round count", this.gameroomId);
+      // delay firing to give other clients time to hook their listeners
+      setTimeout(() => socket.emit("update round count", this.gameroomId), 2000);
+    }
+  }
+
+  animateDots() {
+    for (let i = 0; i < this.dots.length; i++) {
+      const dot = this.dots[i];
+      dot.alpha = dot.alpha === 1 ? 0 : 1; // Toggle dot's visibility
     }
   }
 }
