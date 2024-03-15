@@ -43,7 +43,7 @@ export default function Game({ players, gameroomId, hostId }: GameProps) {
     game.scene.start("Preloader", { players, gameroomId, hostId });
 
     return () => {
-      game.destroy(true);
+      game.destroy(true, false);
     };
   }, []);
 

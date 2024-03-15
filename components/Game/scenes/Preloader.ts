@@ -74,6 +74,11 @@ export class Preloader extends Scene {
       this.scene.start("RoundInfo", { roundCount, players, gameroomId });
     });
 
+    this.events.on("destroy", () => {
+      socket.off("go to next round");
+      console.log("Removing socket listeners on Preloader scene");
+    });
+
     if (socket.id === this.hostId) {
       socket.emit("update round count", this.gameroomId);
     }

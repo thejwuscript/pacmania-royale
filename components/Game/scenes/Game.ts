@@ -32,14 +32,13 @@ export class Game extends Scene {
     socket.emit("get initial positions", this.gameroomId, (players: any) => {
       this.onCurrentPlayers(players);
     });
+    socket.emit("fruit timer", 2000, this.gameroomId);
 
     socket.on("player moved", (player) => this.onPlayerMoved(player));
 
     socket.on("player defeated", (winnerSocketId, defeatedSocketId) => {
       this.onPlayerDefeated(winnerSocketId, defeatedSocketId);
     });
-
-    socket.emit("fruit timer", 2000, this.gameroomId);
 
     socket.on("fruit location", (x: number, y: number) => {
       this.cherry?.destroy();
@@ -67,6 +66,17 @@ export class Game extends Scene {
     socket.on("player return to normal", (id: string) => {
       this.players[id].sprite.setScale(1);
       socket.emit("fruit timer", 2000, this.gameroomId);
+    });
+
+    this.scene.scene.events.on("destroy", () => {
+      socket.off("player moved");
+      socket.off("player defeated");
+      socket.off("fruit location");
+      socket.off("go to next round");
+      socket.off("game over");
+      socket.off("payer power up");
+      socket.off("player return to normal");
+      console.log("Removing socket listeners on Game scene");
     });
   }
 
@@ -183,7 +193,7 @@ export class Game extends Scene {
             socket.emit("update round count", this.gameroomId);
           },
           [],
-          this
+          this.scene
         );
       }
     });

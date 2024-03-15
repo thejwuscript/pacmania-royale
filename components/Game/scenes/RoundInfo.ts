@@ -77,7 +77,7 @@ export class RoundInfo extends Scene {
         this.scene.start("Game", { roundCount: this.roundCount, players: this.players, gameroomId: this.gameroomId });
       },
       [],
-      this
+      this.scene
     );
   }
 }
