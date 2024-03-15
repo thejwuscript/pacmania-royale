@@ -74,7 +74,7 @@ export class Game extends Scene {
       socket.off("fruit location");
       socket.off("go to next round");
       socket.off("game over");
-      socket.off("payer power up");
+      socket.off("player power up");
       socket.off("player return to normal");
       console.log("Removing socket listeners on Game scene");
     });
