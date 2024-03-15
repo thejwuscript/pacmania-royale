@@ -91,8 +91,12 @@ export default function Gameroom({ params }: { params: { id: string } }) {
   };
 
   return (
-    <div className="px-2">
-      <h1 className="text-4xl font-bold text-gray-900 my-8">Game Room #{params.id}</h1>
+    <div className="px-2 pt-4">
+      <Link href="/" className="flex items-center gap-1 p-2">
+        <span className="text-2xl">&#129044;</span>
+        <span className="hover:underline underline-offset-2">Back</span>
+      </Link>
+      <h1 className="text-4xl font-bold text-gray-900 mt-2 mb-8">Game Room #{params.id}</h1>
       <h2 className="underline underline-offset-1 font-semibold text-gray-900 text-xl my-4">Players</h2>
       <ul className="flex flex-col gap-1 mb-5">
         {players.map((player, index) => (
@@ -110,9 +114,7 @@ export default function Gameroom({ params }: { params: { id: string } }) {
           Start Game
         </Button>
       )}
-      {roomFull && !host && !gameStarted && (
-        <span>Waiting for the host to start the game...</span>
-      )}
+      {roomFull && !host && !gameStarted && <span>Waiting for the host to start the game...</span>}
       {gameStarted && !error && <Game players={players} gameroomId={params.id} hostId={hostId} />}
       {error && (
         <div className="fixed top-0 left-0 w-full h-full backdrop-filter backdrop-blur-sm flex justify-center items-center">
