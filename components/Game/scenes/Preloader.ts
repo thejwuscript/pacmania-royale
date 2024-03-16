@@ -26,23 +26,37 @@ export class Preloader extends Scene {
 
   preload() {
     this.load.atlas("pacman-atlas", "/assets/texture_atlas.png", "/assets/spriteatlas.json");
+    this.load.script("webfont", "https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js");
   }
 
   create() {
-    this.loadingText = this.add
-      .text(this.cameras.main.centerX, this.cameras.main.centerY, "Loading ", { font: "32px Arial", fill: "#ffffff" })
-      .setOrigin(0.5);
-
     this.dots = [];
-    for (let i = 0; i < 3; i++) {
-      const dot = this.add
-        .text(this.cameras.main.centerX + 60 + i * 20, this.cameras.main.centerY, ".", {
-          font: "32px Arial",
-          fill: "#ffffff",
-        })
-        .setOrigin(0.5);
-      this.dots.push(dot);
-    }
+
+    WebFont.load({
+      google: {
+        families: ["Press Start 2P"],
+      },
+      active: () => {
+        const loadingText = this.add
+          .text(this.cameras.main.centerX, this.cameras.main.centerY, "Loading", {
+            fontSize: "24px",
+            fontFamily: '"Press Start 2P"',
+            color: "#ffffff",
+          })
+          .setOrigin(0.5);
+
+        for (let i = 0; i < 3; i++) {
+          const dot = this.add
+            .text(loadingText.x + loadingText.displayWidth / 2 + 10 + i * 20, this.cameras.main.centerY, ".", {
+              fontSize: "24px",
+              fontFamily: '"Press Start 2P"',
+              color: "#ffffff",
+            })
+            .setOrigin(0.5);
+          this.dots.push(dot);
+        }
+      },
+    });
 
     this.time.addEvent({
       delay: 300,
