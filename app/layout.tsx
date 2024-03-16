@@ -9,8 +9,8 @@ const pressStart2P = localFont({ src: "../fonts/PressStart2P-Regular.ttf", varia
 const inter = localFont({ src: "../fonts/Inter-VariableFont.ttf" });
 
 export const metadata: Metadata = {
-  title: "Placeholder",
-  description: "placeholder",
+  title: "Pac-Mania Royale",
+  description: "Multiplayer competitive Pac-Man game",
 };
 
 export default function RootLayout({
