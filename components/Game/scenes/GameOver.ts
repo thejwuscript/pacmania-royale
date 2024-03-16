@@ -19,13 +19,13 @@ export class GameOver extends Scene {
     const centerY = this.cameras.main.centerY;
 
     const textStyle: TextStyle = {
-      fontFamily: "Times New Roman",
-      fontSize: "28px",
+      fontFamily: '"Press Start 2P"',
+      fontSize: "22px",
     };
 
     this.add.text(centerX, centerY - 50, "Game Over", textStyle).setOrigin(0.5);
 
     const message = `${this.name} wins the game!`;
-    this.add.text(centerX, centerY + 50, message, textStyle).setOrigin(0.5);
+    this.add.text(centerX, centerY + 50, message, {...textStyle, fontSize: "16px"}).setOrigin(0.5);
   }
 }

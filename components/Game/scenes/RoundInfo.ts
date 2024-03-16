@@ -36,24 +36,22 @@ export class RoundInfo extends Scene {
     const centerY = this.cameras.main.centerY;
 
     const roundTextStyle = {
-      fontFamily: "Times New Roman",
-      fontSize: "32px",
+      fontFamily: '"Press Start 2P"',
+      fontSize: "22px",
       color: "#fff",
       fontStyle: "normal",
-      strokeThickness: 1,
     };
 
     const roundText = this.add.text(centerX, centerY - 100, `Round ${this.roundCount}`, roundTextStyle);
     roundText.setOrigin(0.5);
 
     const bestOfTest = this.add
-      .text(centerX, roundText.y + 35, "(Best of 3)", { ...roundTextStyle, fontSize: "20px" })
+      .text(centerX, roundText.y + 35, "(Best of 3)", { ...roundTextStyle, fontSize: "14px" })
       .setOrigin(0.5);
 
     const scoreTextStyle: TextStyle = {
-      fontFamily: "Times New Roman",
-      fontSize: "30px",
-      strokeThickness: 2,
+      fontFamily: '"Press Start 2P"',
+      fontSize: "20px",
     };
 
     const playersAry = Object.values(this.players);
