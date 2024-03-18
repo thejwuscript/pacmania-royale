@@ -1,15 +1,18 @@
 import { Scene } from "phaser";
+import WebFont from "webfontloader";
 import type { Player } from "@/app/gameroom/[id]/page";
 import { socket } from "@/components/SocketProvider";
 
 export class Preloader extends Scene {
   gameroomId: string;
   hostId: string;
+  dots: Phaser.GameObjects.Text[];
 
   constructor() {
     super("Preloader");
     this.gameroomId = "";
     this.hostId = "";
+    this.dots = [];
   }
 
   init(data: { players: Player[]; gameroomId: string; hostId: string }) {
@@ -26,12 +29,9 @@ export class Preloader extends Scene {
 
   preload() {
     this.load.atlas("pacman-atlas", "/assets/texture_atlas.png", "/assets/spriteatlas.json");
-    this.load.script("webfont", "https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js");
   }
 
   create() {
-    this.dots = [];
-
     WebFont.load({
       google: {
         families: ["Press Start 2P"],
